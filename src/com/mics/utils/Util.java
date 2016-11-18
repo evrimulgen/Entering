@@ -1,6 +1,6 @@
 package com.mics.utils;
 
-public class HttpUtil {
+public class Util {
 
 	public static String getToken(){
 		return null;

@@ -1,4 +1,4 @@
-package com.mics.work;
+package com.mics.http;
 
 import com.mics.conf.BaseConf;
 import com.mics.utils.GsonConverterFactory;
