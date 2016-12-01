@@ -3,17 +3,20 @@ package com.mics.utils;
 import java.security.MessageDigest;
 
 public class Util {
+	public static void main(String args[]){
+		getToken("meinian", "123456");
+	}
 	
 	public static String getToken(String username,String password){
 		String plainText = username + password + "RaymedTECH";
 		try {
-	        //Éú³ÉÊµÏÖÖ¸¶¨ÕªÒªËã·¨µÄ MessageDigest ¶ÔÏó¡£
+	        //ç”Ÿæˆå®ç°æŒ‡å®šæ‘˜è¦ç®—æ³•çš„ MessageDigest å¯¹è±¡
 	        MessageDigest md = MessageDigest.getInstance("MD5");  
-	        //Ê¹ÓÃÖ¸¶¨µÄ×Ö½ÚÊı×é¸üĞÂÕªÒª¡£
+	        //ä½¿ç”¨æŒ‡å®šçš„å­—èŠ‚æ•°ç»„æ›´æ–°æ‘˜è¦
 	        md.update(plainText.getBytes());
-	        //Í¨¹ıÖ´ĞĞÖîÈçÌî³äÖ®ÀàµÄ×îÖÕ²Ù×÷Íê³É¹şÏ£¼ÆËã¡£
+	        //é€šè¿‡æ‰§è¡Œè¯¸å¦‚å¡«å……ä¹‹ç±»çš„æœ€ç»ˆæ“ä½œå®Œæˆå“ˆå¸Œè®¡ç®—
 	        byte b[] = md.digest();
-	        //Éú³É¾ßÌåµÄmd5ÃÜÂëµ½bufÊı×é
+	        //ç”Ÿæˆå…·ä½“çš„md5å¯†ç åˆ°bufæ•°ç»„
 	        int i;
 	        StringBuffer buf = new StringBuffer("");
 	        for (int offset = 0; offset < b.length; offset++) {
@@ -22,6 +25,7 @@ public class Util {
 	            i += 256;
 	          if (i < 16)
 	            buf.append("0");
+	          System.out.println(Integer.toHexString(i));
 	          buf.append(Integer.toHexString(i));
 	        }
 	        return buf.toString();
