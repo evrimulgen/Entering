@@ -18,10 +18,13 @@ public class HttpTest {
 	}
 
 	@Test
-	public void test() {
+	public void test() throws InterruptedException {
 		try {
-			httpRequest.DoctorLogin();
-			System.out.println("------------------------------------------------------------------------------------------\n\n\n\n");
+//			httpRequest.DoctorLogin();
+			httpRequest.getPatientList();
+//			Thread.sleep(1000);
+			httpRequest.getPatientList();
+//			Thread.sleep(1000);
 			httpRequest.getPatientList();
 		} catch (IOException e) {
 			e.printStackTrace();

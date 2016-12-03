@@ -8,7 +8,7 @@ import retrofit2.http.Query;
 
 public interface DoctorRequest {
 
-	@GET("/api/doctor/login")
+	@GET("api/doctor/login")
 	Call<ResponseBody> doctorLogin(@Query("username") String username, @Query("password") String password, @Query("token") String token);
 	
 	

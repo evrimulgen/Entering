@@ -25,7 +25,6 @@ public class Util {
 	            i += 256;
 	          if (i < 16)
 	            buf.append("0");
-	          System.out.println(Integer.toHexString(i));
 	          buf.append(Integer.toHexString(i));
 	        }
 	        return buf.toString();
