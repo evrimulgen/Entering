@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.mics.http.HttpRequest;
+import com.mics.http.imp.HttpRequest;
 
 public class HttpTest {
 
@@ -19,11 +19,6 @@ public class HttpTest {
 	@Test
 	public void test() throws InterruptedException {
 		try {
-			// httpRequest.DoctorLogin();
-			httpRequest.getPatientList();
-			// Thread.sleep(1000);
-			httpRequest.getPatientList();
-			// Thread.sleep(1000);
 			httpRequest.getPatientList();
 		} catch (IOException e) {
 			e.printStackTrace();

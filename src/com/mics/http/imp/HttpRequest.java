@@ -1,9 +1,9 @@
-package com.mics.http;
+package com.mics.http.imp;
 
 import java.io.IOException;
 
 import com.mics.conf.BaseConf;
-import com.mics.http.inter.DoctorRequest;
+import com.mics.http.DoctorRequest;
 import com.mics.utils.Util;
 
 import okhttp3.ResponseBody;
