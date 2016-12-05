@@ -7,16 +7,13 @@ import java.util.Map;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.mics.http.BaseClass;
 import com.mics.http.HttpRequest;
 
-import okhttp3.Headers;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
-import okhttp3.Headers.Builder;
 import okio.Buffer;
 import okio.BufferedSource;
 

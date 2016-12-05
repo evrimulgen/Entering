@@ -1,7 +1,6 @@
 package com.mics.http;
 
 import java.io.IOException;
-import java.util.function.Consumer;
 
 import com.mics.conf.BaseConf;
 import com.mics.http.inter.DoctorRequest;

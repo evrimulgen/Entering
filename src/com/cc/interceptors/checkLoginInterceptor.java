@@ -1,24 +1,10 @@
 package com.cc.interceptors;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.Map;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-import com.mics.http.BaseClass;
-import com.mics.http.HttpRequest;
-
-import okhttp3.Headers;
-import okhttp3.Headers.Builder;
 import okhttp3.Interceptor;
-import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.Response;
-import okhttp3.ResponseBody;
-import okio.Buffer;
-import okio.BufferedSource;
 
 public class checkLoginInterceptor implements Interceptor{
 	@Override
