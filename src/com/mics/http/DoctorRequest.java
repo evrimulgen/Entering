@@ -1,4 +1,4 @@
-package com.mics.http.inter;
+package com.mics.http;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;

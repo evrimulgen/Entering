@@ -1,13 +1,11 @@
-package com.mics.http;
+package com.mics.http.imp;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.cc.interceptors.NetLoginInterceptor;
-import com.cc.interceptors.checkLoginInterceptor;
 import com.mics.conf.BaseConf;
 import com.mics.utils.GsonConverterFactory;
 
