@@ -1,8 +1,9 @@
+package com.mics.test;
+
 import org.junit.Before;
 import org.junit.Test;
 
 import com.mics.utils.JDBCUtil;
-
 
 public class JDBCTest {
 	private JDBCUtil jdbcUtil = null;
@@ -11,8 +12,8 @@ public class JDBCTest {
 	
 	@Before
 	public void init(){
-		filename = "abcde";
-		filepath = "D:/abcde";
+		filename = "abcdef";
+		filepath = "D:/abcdef";
 		jdbcUtil = new JDBCUtil();
 	}
 	
@@ -20,5 +21,4 @@ public class JDBCTest {
 	public void test(){
 		jdbcUtil.executeUpdate(filename,filepath);
 	}
-
 }
