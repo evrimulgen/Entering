@@ -11,8 +11,8 @@ public class JDBCTest {
 	
 	@Before
 	public void init(){
-		filename = "abc";
-		filepath = "D:/abc";
+		filename = "abcde";
+		filepath = "D:/abcde";
 		jdbcUtil = new JDBCUtil();
 	}
 	
