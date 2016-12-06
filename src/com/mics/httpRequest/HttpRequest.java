@@ -1,16 +1,17 @@
-package com.mics.http.imp;
+package com.mics.httpRequest;
 
 import java.io.IOException;
 import java.util.Map;
 
 import com.google.gson.Gson;
 import com.mics.conf.BaseConf;
-import com.mics.http.DoctorRequest;
+import com.mics.httpInterface.DoctorRequest;
 import com.mics.utils.Util;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
+import retrofit2.http.Query;
 
 public class HttpRequest extends BaseClass {
 	
@@ -39,5 +40,11 @@ public class HttpRequest extends BaseClass {
 		Response<ResponseBody> response = call.execute();
 		Map<String, Object> map = Util.String2Map(response.body().string());
 		return map;
+	}
+	
+	public void creatPatientWithNo(String name, String sex, String i, String patientID, String username) throws IOException{
+		Call<ResponseBody> call = doctorRequest.creatPatientWithNo(5, name, sex, i, patientID, username);
+		Response<ResponseBody> response = call.execute();
+		System.out.println(response.body().string());
 	}
 }

@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.mics.http.imp.HttpRequest;
+import com.mics.httpRequest.HttpRequest;
 
 public class HttpTest {
 

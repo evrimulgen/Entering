@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Map;
 
-import com.mics.http.imp.HttpRequest;
+import com.mics.httpRequest.HttpRequest;
 import com.mics.utils.Util;
 
 import okhttp3.Interceptor;
@@ -20,6 +20,8 @@ public class NetLoginInterceptor implements Interceptor {
 	@Override
 	public Response intercept(Chain chain) throws IOException {
 		Request request = chain.request();
+		
+		System.out.println(request.tag());
 		Response response = chain.proceed(request);
 		
 		ResponseBody body = response.body();

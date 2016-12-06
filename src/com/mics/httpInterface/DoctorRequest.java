@@ -1,4 +1,4 @@
-package com.mics.http;
+package com.mics.httpInterface;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -19,6 +19,8 @@ public interface DoctorRequest {
 	Call<ResponseBody> queryRecord(@Path("doctorUID") Integer doctorUID, @Query("studyInstanceUID") String studyInstanceUID, @Query("seriesInstanceUID") String seriesInstanceUID, @Query("sopInstanceUID") String sopInstanceUID);
 
 	@GET("api/doctor/{doctorUID}/creatPatientWithNo")
-	Call<ResponseBody> creatPatientWithNo(@Path("doctorUID") Integer doctorUID, );
+	Call<ResponseBody> creatPatientWithNo(@Path("doctorUID") Integer doctorUID, @Query("name") String name, @Query("sex") String sex, @Query("age") String patientAge, @Query("patientID") String patientID, @Query("username") String username);
 
+	@GET("api/doctor/{doctorUID}/addPatientStudy")
+	Call<ResponseBody> addPatientStudy(@Path("doctorUID") Integer doctorUID);
 }

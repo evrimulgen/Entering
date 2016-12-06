@@ -1,4 +1,4 @@
-package com.mics.http.imp;
+package com.mics.httpRequest;
 
 import java.util.ArrayList;
 import java.util.HashMap;
