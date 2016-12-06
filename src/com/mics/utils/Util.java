@@ -1,11 +1,15 @@
 package com.mics.utils;
 
 import java.security.MessageDigest;
+import java.util.Map;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 public class Util {
-	public static void main(String args[]){
-		getToken("meinian", "123456");
-	}
+	
+	private static GsonBuilder gb = new GsonBuilder();
 	
 	public static String getToken(String username,String password){
 		String plainText = username + password + "RaymedTECH";
@@ -35,4 +39,8 @@ public class Util {
 		return null;
 	}
 	
+	public static synchronized Map<String, Object> String2Map(String res){
+		Gson g = gb.create();
+		return g.fromJson(res, new TypeToken<Map<String, Object>>() {}.getType());
+	}
 }

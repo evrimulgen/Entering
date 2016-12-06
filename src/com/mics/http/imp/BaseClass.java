@@ -5,8 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.cc.interceptors.NetLoginInterceptor;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.mics.conf.BaseConf;
+import com.mics.interceptors.NetLoginInterceptor;
 import com.mics.utils.GsonConverterFactory;
 
 import okhttp3.Cookie;
@@ -19,7 +21,7 @@ public class BaseClass {
 	private static Retrofit retrofit;
 	private static OkHttpClient client;
 	private static Map<String, List<Cookie>> cookieStore = new HashMap<String, List<Cookie>>();
-
+	
 	public static Retrofit getRetrofit() {
 		if (retrofit == null) {
 			client = new OkHttpClient.Builder().cookieJar(new CookieJar() {

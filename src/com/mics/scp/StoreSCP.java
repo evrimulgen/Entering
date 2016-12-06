@@ -39,7 +39,7 @@ public class StoreSCP {
 		return serviceRegistry;
 	}
 
-	public void startSCPServer(String[] args) {
+	public void startSCPServer() {
 		try {
 			StoreSCP main = new StoreSCP();
 			main.ae.setAETitle(BaseConf.Scp_AETitle);

@@ -1,13 +1,11 @@
-package com.cc.interceptors;
+package com.mics.interceptors;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Map;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import com.mics.http.imp.HttpRequest;
+import com.mics.utils.Util;
 
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
@@ -35,9 +33,7 @@ public class NetLoginInterceptor implements Interceptor {
             charset = contentType.charset(charset);
         }
         String bodyString = buffer.clone().readString(charset);
-        GsonBuilder gb = new GsonBuilder();
-        Gson g = gb.create();
-        Map<String, Object> map = g.fromJson(bodyString, new TypeToken<Map<String, Object>>() {}.getType());
+        Map<String, Object> map = Util.String2Map(bodyString);
         if((double)map.get("errorCode") == 2.0){
         	System.out.println("未登录，正在尝试登陆。。。");
 //        	HttpRequest httpRequest = new HttpRequest();

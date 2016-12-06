@@ -10,5 +10,8 @@ public class BaseConf {
 	public static int Scp_port = 11112;
 	public static String Scp_AETitle = "STORESCP";
 	public static int Scp_CStore_Status = 0;
-	public static String Scp_StorageDirectory = "C:\\Users\\72338\\Desktop\\save";
+	public static String Scp_StorageDirectory = "E:\\save";
+	
+	//上传线程数MAX
+	public static int Upload_Thread_MAX = 10;
 }

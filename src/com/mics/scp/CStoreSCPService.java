@@ -2,13 +2,15 @@ package com.mics.scp;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.data.VR;
 import org.dcm4che3.io.DicomInputStream;
-import org.dcm4che3.io.DicomOutputStream;
 import org.dcm4che3.io.DicomInputStream.IncludeBulkData;
+import org.dcm4che3.io.DicomOutputStream;
 import org.dcm4che3.net.Association;
 import org.dcm4che3.net.PDVInputStream;
 import org.dcm4che3.net.Status;
@@ -20,20 +22,25 @@ import org.dcm4che3.util.SafeClose;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mics.conf.BaseConf;
+import com.mics.upload.UploadDcm;
+
 public class CStoreSCPService {
 	private static final Logger LOG = LoggerFactory.getLogger(com.mics.scp.StoreSCP.class);
-	
+
 	private static final String PART_EXT = ".part";
 	private File storageDir;
 	private int status = 0;
 	private AttributesFormat filePathFormat = null;
-	
+	// 创建一个定长线程池，可控制线程最大并发数，超出的线程会在队列中等待。 eg:
+	// Runtime.getRuntime().availableProcessors()
+	private ExecutorService fixedThreadPool = Executors.newFixedThreadPool(BaseConf.Upload_Thread_MAX);
+
 	public CStoreSCPService(File storageDir, int status) {
 		this.storageDir = storageDir;
 		this.status = status;
 	}
-	
-	
+
 	public final BasicCStoreSCP cstoreSCP = new BasicCStoreSCP("*") {
 
 		@Override
@@ -51,14 +58,18 @@ public class CStoreSCPService {
 				storeTo(as, as.createFileMetaInformation(iuid, cuid, tsuid), data, file);
 				File newFile = new File(storageDir, filePathFormat == null ? iuid : filePathFormat.format(parse(file)));
 				renameTo(as, file, newFile);
-				System.out.println("=============" + newFile.getName());
+
 //				System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-//				DicomInputStream dicomInputStream = new DicomInputStream(newFile);
-//				Attributes attributes = dicomInputStream.readDataset(-1, Tag.PixelData);
+				DicomInputStream dicomInputStream = new DicomInputStream(newFile);
+				Attributes attributes = dicomInputStream.readDataset(-1, Tag.PixelData);
 //				System.out.println(attributes.getString(Tag.PatientName));
 //				System.out.println(attributes.getString(Tag.StudyInstanceUID));
 //				System.out.println(attributes.getString(Tag.SeriesInstanceUID));
+//				System.out.println(attributes.getString(Tag.SOPInstanceUID));
+//				System.out.println(attributes.getString(Tag.PatientID));
 //				System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+
+				fixedThreadPool.execute(new UploadDcm(attributes, newFile));
 			} catch (Exception e) {
 				deleteFile(as, file);
 				throw new DicomServiceException(Status.ProcessingFailure, e);
@@ -67,10 +78,8 @@ public class CStoreSCPService {
 
 	};
 
-	
-	
 	private void storeTo(Association as, Attributes fmi, PDVInputStream data, File file) throws IOException {
-//		LOG.info("{}: M-WRITE {}", as, file);
+		// LOG.info("{}: M-WRITE {}", as, file);
 		file.getParentFile().mkdirs();
 		DicomOutputStream out = new DicomOutputStream(file);
 		try {
@@ -80,15 +89,18 @@ public class CStoreSCPService {
 			SafeClose.close(out);
 		}
 	}
-	
+
 	private static void renameTo(Association as, File from, File dest) throws IOException {
-//		LOG.info("{}: M-RENAME {} to {}", as, from, dest);
-		if (!dest.getParentFile().mkdirs())
-			dest.delete();
-		if (!from.renameTo(dest))
-			throw new IOException("Failed to rename " + from + " to " + dest);
+		// LOG.info("{}: M-RENAME {} to {}", as, from, dest);
+		if (!dest.exists()) {
+			if (!dest.getParentFile().mkdirs())
+				dest.delete();
+			if (!from.renameTo(dest))
+				throw new IOException("Failed to rename " + from + " to " + dest);
+		}
+		from.delete();
 	}
-	
+
 	private static Attributes parse(File file) throws IOException {
 		DicomInputStream in = new DicomInputStream(file);
 		try {
