@@ -17,4 +17,8 @@ public interface DoctorRequest {
 	
 	@GET("api/doctor/{doctorUID}/queryRecord")
 	Call<ResponseBody> queryRecord(@Path("doctorUID") Integer doctorUID, @Query("studyInstanceUID") String studyInstanceUID, @Query("seriesInstanceUID") String seriesInstanceUID, @Query("sopInstanceUID") String sopInstanceUID);
+
+	@GET("api/doctor/{doctorUID}/creatPatientWithNo")
+	Call<ResponseBody> creatPatientWithNo(@Path("doctorUID") Integer doctorUID, );
+
 }

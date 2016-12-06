@@ -59,7 +59,6 @@ public class CStoreSCPService {
 				File newFile = new File(storageDir, filePathFormat == null ? iuid : filePathFormat.format(parse(file)));
 				renameTo(as, file, newFile);
 
-//				System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
 				DicomInputStream dicomInputStream = new DicomInputStream(newFile);
 				Attributes attributes = dicomInputStream.readDataset(-1, Tag.PixelData);
 //				System.out.println(attributes.getString(Tag.PatientName));
@@ -67,7 +66,6 @@ public class CStoreSCPService {
 //				System.out.println(attributes.getString(Tag.SeriesInstanceUID));
 //				System.out.println(attributes.getString(Tag.SOPInstanceUID));
 //				System.out.println(attributes.getString(Tag.PatientID));
-//				System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
 
 				fixedThreadPool.execute(new UploadDcm(attributes, newFile));
 			} catch (Exception e) {

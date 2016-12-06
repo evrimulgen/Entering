@@ -28,9 +28,8 @@ public class UploadDcm implements Runnable {
 					attributes.getString(Tag.SeriesInstanceUID), 
 					attributes.getString(Tag.SOPInstanceUID));
 			
-			Iterator<Object> iterator = result.values().iterator();
-			while(iterator.hasNext()){
-				System.out.println(iterator.next());
+			if((double)result.get("StudyInstanceUID") == 0.0){
+				
 			}
 			
 		} catch (IOException e) {
