@@ -39,7 +39,7 @@ public interface DoctorRequest {
 	@GET("api/doctor/{doctorUID}/addPatientImage")
 	Call<ResponseBody> addPatientImage(@Path("doctorUID") String doctorUID,@Query("sopInstanceUID") String sopInstanceUID,
 			@Query("filePath") String filePath, @Query("seriesInstanceUID") String seriesInstanceUID,
-			@Query("InsertTimestamp") String serialNumber, @Query("SpaceLocation") String SpaceLocation);
+			@Query("InsertTimestamp") String serialNumber, @Query("SpaceLocation") Double spaceLocation);
 	
 	@GET("api/doctor/{doctorUID}/addClinicalRecord")
 	Call<ResponseBody> addClinicalRecord(@Path("doctorUID") String doctorUID,@Query("userUID") Long userUID,

@@ -101,10 +101,10 @@ public class HttpRequest extends BaseClass {
 		return map;
 	}
 	
-	public Map<String, Object> addPatientImage(String sopInstanceUID, String filePath, String seriesInstanceUID, String serialNumber, String SpaceLocation) throws IOException{
+	public Map<String, Object> addPatientImage(String sopInstanceUID, String filePath, String seriesInstanceUID, String serialNumber, Double spaceLocation) throws IOException{
 		Call<ResponseBody> call = doctorRequest.addPatientImage(BaseConf.doctorUID, sopInstanceUID,
 				filePath, seriesInstanceUID,
-				serialNumber, SpaceLocation);
+				serialNumber, spaceLocation);
 		Response<ResponseBody> response = call.execute();
 		String result = new String(response.body().bytes());
 		System.out.println(result);

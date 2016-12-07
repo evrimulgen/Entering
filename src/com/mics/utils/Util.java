@@ -43,4 +43,8 @@ public class Util {
 		Gson g = gb.create();
 		return g.fromJson(object, new TypeToken<Map<String, Object>>() {}.getType());
 	}
+	
+//	public static synchronized Long Double2Long(Double src){
+//		return 
+//	}
 }
