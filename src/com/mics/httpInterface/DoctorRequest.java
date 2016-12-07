@@ -1,8 +1,14 @@
 package com.mics.httpInterface;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
+import retrofit2.http.POST;
+import retrofit2.http.PUT;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -39,7 +45,7 @@ public interface DoctorRequest {
 	@GET("api/doctor/{doctorUID}/addPatientImage")
 	Call<ResponseBody> addPatientImage(@Path("doctorUID") String doctorUID,@Query("sopInstanceUID") String sopInstanceUID,
 			@Query("filePath") String filePath, @Query("seriesInstanceUID") String seriesInstanceUID,
-			@Query("InsertTimestamp") String serialNumber, @Query("SpaceLocation") Double spaceLocation);
+			@Query("InsertTimestamp") String serialNumber, @Query("SpaceLocation") String spaceLocation);
 	
 	@GET("api/doctor/{doctorUID}/addClinicalRecord")
 	Call<ResponseBody> addClinicalRecord(@Path("doctorUID") String doctorUID,@Query("userUID") Long userUID,
@@ -48,4 +54,11 @@ public interface DoctorRequest {
 	@GET("api/doctor/{doctorUID}/getClinicalRecord")
 	Call<ResponseBody> getClinicalRecord(@Path("doctorUID") String doctorUID, @Query("serialNumber") String serialNumber,
 			@Query("institutionId") String institutionId);
+	
+	@GET("api/doctor/{doctorUID}/getImageStorePath")
+	Call<ResponseBody> getImageStorePath(@Path("doctorUID") String doctorUID, @Query("filePath") String filePath);
+	
+	@Multipart
+	@PUT("{url}")
+	Call<ResponseBody> uploadDcm(@Path("url") String url, @Part("description") RequestBody description, @Part MultipartBody.Part file);
 }

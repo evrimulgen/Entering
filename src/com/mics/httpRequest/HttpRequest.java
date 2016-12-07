@@ -1,5 +1,6 @@
 package com.mics.httpRequest;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
@@ -9,10 +10,13 @@ import com.mics.conf.BaseConf;
 import com.mics.httpInterface.DoctorRequest;
 import com.mics.utils.Util;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.http.Query;
 
 public class HttpRequest extends BaseClass {
 	
@@ -101,7 +105,7 @@ public class HttpRequest extends BaseClass {
 		return map;
 	}
 	
-	public Map<String, Object> addPatientImage(String sopInstanceUID, String filePath, String seriesInstanceUID, String serialNumber, Double spaceLocation) throws IOException{
+	public Map<String, Object> addPatientImage(String sopInstanceUID, String filePath, String seriesInstanceUID, String serialNumber, String spaceLocation) throws IOException{
 		Call<ResponseBody> call = doctorRequest.addPatientImage(BaseConf.doctorUID, sopInstanceUID,
 				filePath, seriesInstanceUID,
 				serialNumber, spaceLocation);
@@ -110,5 +114,43 @@ public class HttpRequest extends BaseClass {
 		System.out.println(result);
 		Map<String, Object> map = Util.String2Map(result);
 		return map;
+	}
+	
+	public Map<String, Object> getImageStorePath(String filePath) throws IOException{
+		Call<ResponseBody> call = doctorRequest.getImageStorePath(BaseConf.doctorUID, filePath);
+		Response<ResponseBody> response = call.execute();
+		String result = new String(response.body().bytes());
+		System.out.println(result);
+		Map<String, Object> map = Util.String2Map(result);
+		return map;
+	}
+	
+	public void uploadDcm(String url, File file) throws IOException{
+		
+		RequestBody requestFile =
+	            RequestBody.create(MediaType.parse("multipart/form-data"), file);
+
+		MultipartBody.Part body =
+	            MultipartBody.Part.createFormData("picture", file.getName(), requestFile);
+		
+		String descriptionString = "hello";
+		
+		RequestBody description =
+	            RequestBody.create(
+	                    MediaType.parse("multipart/form-data"), descriptionString);
+
+		Call<ResponseBody> call = doctorRequest.uploadDcm(url, description, body);
+		call.enqueue(new Callback<ResponseBody>() {
+	        @Override
+	        public void onResponse(Call<ResponseBody> call,
+	                               Response<ResponseBody> response) {
+	            System.out.println("Upload : success");
+	        }
+
+	        @Override
+	        public void onFailure(Call<ResponseBody> call, Throwable t) {
+	            System.out.println("Upload error:" + t.getMessage());
+	        }
+		});
 	}
 }
