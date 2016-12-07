@@ -6,7 +6,6 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
-import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
@@ -58,7 +57,11 @@ public interface DoctorRequest {
 	@GET("api/doctor/{doctorUID}/getImageStorePath")
 	Call<ResponseBody> getImageStorePath(@Path("doctorUID") String doctorUID, @Query("filePath") String filePath);
 	
+//	@Multipart
+//	@PUT("{url}")
+//	Call<ResponseBody> uploadDcm(@Path("url") String url, @Part("description") RequestBody description, @Part MultipartBody.Part file);
+	
 	@Multipart
 	@PUT("{url}")
-	Call<ResponseBody> uploadDcm(@Path("url") String url, @Part("description") RequestBody description, @Part MultipartBody.Part file);
+	Call<ResponseBody> uploadDcm(@Path("url") String url, @Part MultipartBody.Part file);
 }

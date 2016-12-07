@@ -37,7 +37,6 @@ public class NetLoginInterceptor implements Interceptor {
 			}
 			String bodyString = buffer.clone().readString(charset);
 			Map<String, Object> map = Util.String2Map(bodyString);
-			System.out.println(map.containsKey("errorCode"));
 			if ((double) map.get("errorCode") == 2.0) {
 				System.out.println("未登录，正在尝试登陆。。。");
 				// HttpRequest httpRequest = new HttpRequest();

@@ -131,15 +131,9 @@ public class HttpRequest extends BaseClass {
 	            RequestBody.create(MediaType.parse("multipart/form-data"), file);
 
 		MultipartBody.Part body =
-	            MultipartBody.Part.createFormData("picture", file.getName(), requestFile);
+	            MultipartBody.Part.createFormData("file", file.getName(), requestFile);
 		
-		String descriptionString = "hello";
-		
-		RequestBody description =
-	            RequestBody.create(
-	                    MediaType.parse("multipart/form-data"), descriptionString);
-
-		Call<ResponseBody> call = doctorRequest.uploadDcm(url, description, body);
+		Call<ResponseBody> call = doctorRequest.uploadDcm(url, body);
 		call.enqueue(new Callback<ResponseBody>() {
 	        @Override
 	        public void onResponse(Call<ResponseBody> call,
