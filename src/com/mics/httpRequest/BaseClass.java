@@ -21,6 +21,7 @@ public class BaseClass {
 	private static Retrofit retrofit;
 	private static OkHttpClient client;
 	private static Map<String, List<Cookie>> cookieStore = new HashMap<String, List<Cookie>>();
+	private static Map<String, Long> studyCache = new HashMap<>();
 	
 	public static Retrofit getRetrofit() {
 		if (retrofit == null) {
@@ -69,4 +70,15 @@ public class BaseClass {
 		return retrofit;
 	}
 
+	public static Map<String, Long> getStudyCache() {
+		return studyCache;
+	}
+
+	public static void addStudyCache(String key, Object value) {
+		if(studyCache.size() >= BaseConf.studyCache_Max){
+			studyCache.remove(studyCache.keySet().iterator().next());
+		}
+		Long userUID = new Double((Double)value).longValue();
+		studyCache.put(key, userUID);
+	}
 }

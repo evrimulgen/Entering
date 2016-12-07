@@ -18,10 +18,6 @@ public class HttpTest {
 
 	@Test
 	public void test() throws InterruptedException {
-		try {
-			httpRequest.getPatientList();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		
 	}
 }

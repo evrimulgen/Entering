@@ -39,8 +39,8 @@ public class Util {
 		return null;
 	}
 	
-	public static synchronized Map<String, Object> String2Map(String res){
+	public static synchronized Map<String, Object> String2Map(String object){
 		Gson g = gb.create();
-		return g.fromJson(res, new TypeToken<Map<String, Object>>() {}.getType());
+		return g.fromJson(object, new TypeToken<Map<String, Object>>() {}.getType());
 	}
 }
