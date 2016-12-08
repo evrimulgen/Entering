@@ -2,12 +2,15 @@ package com.mics.httpRequest;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Map;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mics.conf.BaseConf;
 import com.mics.httpInterface.DoctorRequest;
+import com.mics.httpInterface.UploadRequest;
+import com.mics.upload.UploadDcm;
 import com.mics.utils.Util;
 
 import okhttp3.MediaType;
@@ -125,19 +128,54 @@ public class HttpRequest extends BaseClass {
 		return map;
 	}
 	
-	public void uploadDcm(String url, File file) throws IOException{
+	public void uploadDcm(String strUrl, File file) throws IOException{
+		URL url = new URL(strUrl);
+		String[] querys = url.getQuery().split("&");
+		String base = url.getProtocol() + "://" + url.getHost() + ":" + url.getPort();
 		
+		String Expires = querys[0].substring(querys[0].indexOf('='), querys[0].length());
+		String OSSAccessKeyId = querys[1].substring(querys[1].indexOf('='), querys[1].length());
+		String Signature = querys[2].substring(querys[2].indexOf('='), querys[2].length());
+		
+		System.out.println(url.getQuery());
 		RequestBody requestFile =
 	            RequestBody.create(MediaType.parse("multipart/form-data"), file);
-
-		MultipartBody.Part body =
-	            MultipartBody.Part.createFormData("file", file.getName(), requestFile);
 		
-		Call<ResponseBody> call = doctorRequest.uploadDcm(url, body);
+		MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestFile)
+				.createFormData("Expires", Expires)
+				.createFormData("OSSAccessKeyId", OSSAccessKeyId)
+				.createFormData("Signature", Signature);
+//		MultipartBody.Part expires = MultipartBody.Part.createFormData("Expires", Expires);
+//		MultipartBody.Part ossAccessKeyId = MultipartBody.Part.createFormData("OSSAccessKeyId", OSSAccessKeyId);
+//		MultipartBody.Part signature = MultipartBody.Part.createFormData("Signature", Signature);
+		
+//	    RequestBody Expires =
+//	            RequestBody.create(
+//	                    MediaType.parse("multipart/form-data"), expires);
+//	    RequestBody OSSAccessKeyId =
+//	            RequestBody.create(
+//	                    MediaType.parse("multipart/form-data"), ossAccessKeyId);
+//	    RequestBody Signature =
+//	            RequestBody.create(
+//	                    MediaType.parse("multipart/form-data"), signature);
+		UploadRequest uploadRequest = BaseClass.getUploadRetrofit(base).create(UploadRequest.class);
+		
+		Call<ResponseBody> call = uploadRequest.uploadDcm(url.getFile().substring(0,url.getFile().indexOf('?')),
+//				Expires,
+//				OSSAccessKeyId,
+//				Signature,
+				body);
 		call.enqueue(new Callback<ResponseBody>() {
 	        @Override
 	        public void onResponse(Call<ResponseBody> call,
 	                               Response<ResponseBody> response) {
+	        	System.out.println(response.isSuccessful());
+	        	try {
+					System.out.println(response.errorBody().string());
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 	            System.out.println("Upload : success");
 	        }
 

@@ -10,7 +10,6 @@ public class checkLoginInterceptor implements Interceptor{
 	@Override
 	public Response intercept(Chain chain) throws IOException {
 		Request request = chain.request();
-		System.out.println("+1");
 		System.out.println("----------------------------------------------------------------------------");
 		System.out.println(request.headers().toString());
 //		if(request.header("Cookie") == null && !request.url().toString().contains("login")){

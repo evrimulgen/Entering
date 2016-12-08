@@ -25,6 +25,8 @@ public class NetLoginInterceptor implements Interceptor {
 		
 		Response response = chain.proceed(request);
 		
+//		System.out.println(response.headers().toString());
+		
 		if (request.method().equals("GET")) {
 			ResponseBody body = response.body();
 			BufferedSource source = body.source();
