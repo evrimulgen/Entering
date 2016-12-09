@@ -40,6 +40,8 @@ public class UploadDcm implements Runnable {
 
 			if (Double.valueOf((Double) result.get("studyInstanceUID")) != 1.0) {
 				addStudy();
+				addClinicalRecord();
+				createOrderByDoctor();
 			}
 
 			if (Double.valueOf((Double) result.get("seriesInstanceUID")) != 1.0) {
@@ -57,8 +59,11 @@ public class UploadDcm implements Runnable {
 
 	private void creatPatient() throws NumberFormatException, IOException {
 		Calendar calendar = Calendar.getInstance();
-		String patientAge = attributes.getString(Tag.PatientAge);
-		patientAge = patientAge.substring(0, patientAge.length() - 1);
+		String patientAge = null;
+		if(null != attributes.getString(Tag.PatientAge)){
+			patientAge = attributes.getString(Tag.PatientAge);
+			patientAge = attributes.getString(Tag.PatientAge).substring(0, patientAge.length() - 1);
+		}
 		// String reg = "^(?<year>\\d{4}).?(?<month>\\d{2}).?(?<day>\\d{2})$";
 		// Pattern p = Pattern.compile(reg);
 		// Matcher m = p.matcher(PatientBirthDate);
@@ -77,7 +82,7 @@ public class UploadDcm implements Runnable {
 				attributes.getString(Tag.PatientID), attributes.getString(Tag.StudyDate),
 				attributes.getString(Tag.StudyTime), attributes.getString(Tag.ModalitiesInStudy),
 				attributes.getString(Tag.InstitutionName), attributes.getString(Tag.StudyDescription));
-		addClinicalRecord();
+		
 	}
 
 	private void addSeries() throws IOException {
@@ -91,10 +96,10 @@ public class UploadDcm implements Runnable {
 	}
 
 	private void addPatientImage() throws IOException {
-		filePath = BaseConf.Dcm_PreFilePath
-				+ BaseClass.getStudyCache().get(attributes.getString(Tag.StudyInstanceUID)) + "/"
+		filePath = BaseConf.Dcm_PreFilePath + BaseClass.getStudyCache().get(attributes.getString(Tag.StudyInstanceUID)) + "/"
 				+ attributes.getString(Tag.StudyInstanceUID) + "/" + attributes.getString(Tag.SeriesInstanceUID) + "/"
 				+ attributes.getString(Tag.SOPInstanceUID);
+		
 		String spaceLocation = getSpaceLocation();
 		Map<String, Object> map = httpRequest.addPatientImage(attributes.getString(Tag.SOPInstanceUID), filePath,
 				attributes.getString(Tag.SeriesInstanceUID), attributes.getString(Tag.SeriesNumber), spaceLocation);
@@ -105,7 +110,16 @@ public class UploadDcm implements Runnable {
 				attributes.getString(Tag.SeriesNumber), BaseConf.hospitalNo);
 	}
 	
+	private void createOrderByDoctor() throws IOException{
+		Map<String, Object> map = httpRequest.createOrderByDoctor(BaseConf.hospitalNo,
+				attributes.getString(Tag.StudyInstanceUID),
+				BaseClass.getStudyCache().get(attributes.getString(Tag.StudyInstanceUID)));
+	}
+	
 	private void uploadDcm() throws IOException{
+		filePath = BaseClass.getStudyCache().get(attributes.getString(Tag.StudyInstanceUID)) + "/"
+				+ attributes.getString(Tag.StudyInstanceUID) + "/" + attributes.getString(Tag.SeriesInstanceUID) + "/"
+				+ attributes.getString(Tag.SOPInstanceUID);
 		Map<String, Object> map = httpRequest.getImageStorePath(filePath);
 		ArrayList imageStorePath = (ArrayList) map.get("ImageStorePath");
 		System.out.println(imageStorePath.get(0));

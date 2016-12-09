@@ -24,10 +24,6 @@ public class BaseClass {
 	private static Map<String, List<Cookie>> cookieStore = new HashMap<String, List<Cookie>>();
 	private static Map<String, Long> studyCache = new HashMap<>();
 
-	// upload
-	private static Retrofit upload_retrofit;
-	private static OkHttpClient upload_client;
-
 	public static Retrofit getRetrofit() {
 		if (retrofit == null) {
 			client = new OkHttpClient.Builder().cookieJar(new CookieJar() {
@@ -43,30 +39,8 @@ public class BaseClass {
 					return cookies != null ? cookies : new ArrayList<Cookie>();
 				}
 			})
-					// .authenticator(new Authenticator() {
-					// @Override
-					// public Request authenticate(Route route, Response
-					// response) throws IOException {
-					// System.out.println("Authenticating for response: " +
-					// response);
-					// System.out.println("Challenges: " +
-					// response.challenges());
-					// String credential = Credentials.basic("jesse",
-					// "password1");
-					// return
-					// response.request().newBuilder().header("Authorization",
-					// credential).build();
-					// }
-					//
-					// @Override
-					// public Request authenticate(Route arg0, okhttp3.Response
-					// arg1) throws IOException {
-					// // TODO Auto-generated method stub
-					// return null;
-					// }
-					// })
-					.addInterceptor(new NetLoginInterceptor()).addNetworkInterceptor(new checkLoginInterceptor())
-					.build();
+//					.addInterceptor(new NetLoginInterceptor())
+					.addNetworkInterceptor(new checkLoginInterceptor()).build();
 
 			retrofit = new Retrofit.Builder().baseUrl(HttpUrl.parse(BaseConf.baseURL))
 					.addConverterFactory(GsonConverterFactory.create()).client(client).build();
@@ -86,31 +60,9 @@ public class BaseClass {
 		studyCache.put(key, userUID);
 	}
 
-	public static Retrofit getUploadRetrofit(String base) {
-		if (upload_retrofit == null) {
-			upload_client = new OkHttpClient.Builder()
-					// .cookieJar(new CookieJar() {
-					// @Override
-					// public void saveFromResponse(HttpUrl arg0, List<Cookie>
-					// arg1) {
-					// // TODO Auto-generated method stub
-					// cookieStore.put(arg0.host(), arg1);
-					// }
-					//
-					// @Override
-					// public List<Cookie> loadForRequest(HttpUrl arg0) {
-					// List<Cookie> cookies = cookieStore.get(arg0.host());
-					// return cookies != null ? cookies : new
-					// ArrayList<Cookie>();
-					// }
-					// })
-					.addInterceptor(new NetLoginInterceptor())
-//					.addNetworkInterceptor(new checkLoginInterceptor())
-					.build();
-
-			upload_retrofit = new Retrofit.Builder().baseUrl(HttpUrl.parse(base))
-					.addConverterFactory(GsonConverterFactory.create()).client(upload_client).build();
-		}
-		return upload_retrofit;
+	public static OkHttpClient getNewClient() {
+		return new OkHttpClient.Builder().addInterceptor(new NetLoginInterceptor())
+				.addNetworkInterceptor(new checkLoginInterceptor()).build();
 	}
+
 }

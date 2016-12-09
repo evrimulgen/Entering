@@ -21,11 +21,9 @@ public class NetLoginInterceptor implements Interceptor {
 	public Response intercept(Chain chain) throws IOException {
 		Request request = chain.request();
 
-		System.out.println(request.tag());
 		
 		Response response = chain.proceed(request);
 		
-//		System.out.println(response.headers().toString());
 		
 		if (request.method().equals("GET")) {
 			ResponseBody body = response.body();
@@ -41,31 +39,6 @@ public class NetLoginInterceptor implements Interceptor {
 			Map<String, Object> map = Util.String2Map(bodyString);
 			if ((double) map.get("errorCode") == 2.0) {
 				System.out.println("未登录，正在尝试登陆。。。");
-				// HttpRequest httpRequest = new HttpRequest();
-				//
-				// System.out.println(oldRequest.headers().size());
-				//
-				// String JSESSIONID = httpRequest.DoctorLogin().split(";")[0];
-				//
-				// Builder builder = new Builder();
-				// for(int i = 0; i < request.headers().size(); i++){
-				// builder.add(request.headers().name(i),request.headers().value(i));
-				// System.out.println(request.headers().name(i) +" "+
-				// request.headers().value(i));
-				// }
-				// Headers header = builder.add("Cookie", JSESSIONID).build();
-				//
-				// System.out.println(header.toString());
-				//// oldHeader.newBuilder().add("Cookie", JSESSIONID).build();
-				// request.newBuilder()
-				//// .addHeader("Cookie", JSESSIONID)
-				// .headers(header)
-				// .method(request.method(), request.body())
-				// .build();
-				// System.out.println("1");
-				// System.out.println(request.headers().toString());
-				// response = chain.proceed(request);
-				// System.out.println("---->");
 				HttpRequest httpRequest = new HttpRequest();
 				httpRequest.DoctorLogin();
 				response = chain.proceed(request);

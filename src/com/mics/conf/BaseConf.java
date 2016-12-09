@@ -2,12 +2,12 @@ package com.mics.conf;
 
 public class BaseConf {
 	
-	public static String baseURL = "http://192.168.200.186:8080/mics/";
+	public static String baseURL = "http://192.168.200.116/";
 	public static String username = "meinian"; 
 	public static String password = "123456";
-	public static String doctorUID = null;
+	public static Integer doctorUID = null;
 	public static int studyCache_Max = 10;
-	public static String hospitalNo = "5";
+	public static Integer hospitalNo = 444444;
 	
 	
 	//SCP Config
@@ -21,19 +21,19 @@ public class BaseConf {
 	//上传线程数MAX
 	public static int Upload_Thread_MAX = 10;
 
-	public static String getDoctorUID() {
+	public static Integer getDoctorUID() {
 		return doctorUID;
 	}
 
-	public static void setDoctorUID(String doctorUID) {
+	public static void setDoctorUID(Integer doctorUID) {
 		BaseConf.doctorUID = doctorUID;
 	}
 
-	public static String getHospitalNo() {
+	public static Integer getHospitalNo() {
 		return hospitalNo;
 	}
 
-	public static void setHospitalNo(String hospitalNo) {
+	public static void setHospitalNo(Integer hospitalNo) {
 		BaseConf.hospitalNo = hospitalNo;
 	}
 }

@@ -9,97 +9,114 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mics.conf.BaseConf;
 import com.mics.httpInterface.DoctorRequest;
-import com.mics.httpInterface.UploadRequest;
-import com.mics.upload.UploadDcm;
 import com.mics.utils.Util;
 
+import okhttp3.Callback;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
+import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HttpRequest extends BaseClass {
-	
+
 	private DoctorRequest doctorRequest;
 	private static GsonBuilder gb = new GsonBuilder();
 	private Gson g;
-	
+
 	public HttpRequest() {
 		this.doctorRequest = BaseClass.getRetrofit().create(DoctorRequest.class);
 		this.g = gb.create();
 	}
-	
-	
-	public Boolean DoctorLogin() throws IOException{
-		Call<ResponseBody> call = doctorRequest.doctorLogin(BaseConf.username, BaseConf.password, Util.getToken(BaseConf.username, BaseConf.password));
+
+	public Boolean DoctorLogin() throws IOException {
+		Call<ResponseBody> call = doctorRequest.doctorLogin(BaseConf.username, BaseConf.password,
+				Util.getToken(BaseConf.username, BaseConf.password));
 		Response<ResponseBody> response = call.execute();
 		String result = new String(response.body().bytes());
+		System.out.println(result);
 		Map<String, Object> map = Util.String2Map(result);
 		Map<String, Object> user = Util.String2Map(g.toJson(map.get("User")));
-		if((Double)map.get("errorCode") == 0.0){
-			BaseConf.setDoctorUID(user.get("userUID").toString());
-			System.out.println(user.get("userUID"));
+		if ((Double) map.get("errorCode") == 0.0) {
+			double userUID = (double)user.get("userUID");
+			double hospitalUID = (double)user.get("hospitalUID");
+			int doctorUID = (int)userUID;
+			int hospitalNo = (int)hospitalUID;
+			
+			BaseConf.setDoctorUID(doctorUID);
+			BaseConf.setHospitalNo(hospitalNo);
 			return true;
 		}
 		return false;
 	}
-	
-	
-//	public void getPatientList() throws IOException{
-//		Call<ResponseBody> call = doctorRequest.getPatientList(5, 0, 0, "ALL");
-//		Response<ResponseBody> response = call.execute();
-//		System.out.println(response.body().string());
-//	}
-	
-	public Map<String, Object> queryRecord(String studyInstanceUID, String seriesInstanceUID, String sopInstanceUID) throws IOException{
-		Call<ResponseBody> call = doctorRequest.queryRecord(BaseConf.doctorUID, studyInstanceUID, seriesInstanceUID, sopInstanceUID);
+
+	// public void getPatientList() throws IOException{
+	// Call<ResponseBody> call = doctorRequest.getPatientList(5, 0, 0, "ALL");
+	// Response<ResponseBody> response = call.execute();
+	// System.out.println(response.body().string());
+	// }
+
+	public Map<String, Object> queryRecord(String studyInstanceUID, String seriesInstanceUID, String sopInstanceUID)
+			throws IOException {
+		Call<ResponseBody> call = doctorRequest.queryRecord(BaseConf.doctorUID, studyInstanceUID, seriesInstanceUID,
+				sopInstanceUID);
 		Response<ResponseBody> response = call.execute();
 		String result = new String(response.body().bytes());
 		System.out.println(result);
 		Map<String, Object> map = Util.String2Map(result);
 		return map;
 	}
-	
-	public Map<String, Object> creatPatientWithNo(String name, String sex, String i, String patientID, String username) throws IOException{
-		Call<ResponseBody> call = doctorRequest.creatPatientWithNo(BaseConf.doctorUID, name, sex, i, patientID, username);
+
+	public Map<String, Object> creatPatientWithNo(String name, String sex, String i, String patientID, String username)
+			throws IOException {
+		Call<ResponseBody> call = doctorRequest.creatPatientWithNo(BaseConf.doctorUID, name, sex, i, patientID,
+				username);
 		Response<ResponseBody> response = call.execute();
 		String result = new String(response.body().bytes());
 		System.out.println(result);
 		Map<String, Object> map = Util.String2Map(result);
 		return map;
 	}
-	
-	public Map<String, Object> addStudy(Long UserUID, String studyInstanceUID, String patientName, String patientUID, String StudyDate, String StudyTime, String ModalitiesInStudy, String InstitutionName, String StudyDescription) throws IOException{
-		Call<ResponseBody> call = doctorRequest.addPatientStudy(BaseConf.doctorUID, UserUID, studyInstanceUID, patientName, patientUID, StudyDate, StudyTime, ModalitiesInStudy, InstitutionName, StudyDescription);
+
+	public Map<String, Object> addStudy(Long UserUID, String studyInstanceUID, String patientName, String patientUID,
+			String StudyDate, String StudyTime, String ModalitiesInStudy, String InstitutionName,
+			String StudyDescription) throws IOException {
+		Call<ResponseBody> call = doctorRequest.addPatientStudy(BaseConf.doctorUID, UserUID, studyInstanceUID,
+				patientName, patientUID, StudyDate, StudyTime, ModalitiesInStudy, InstitutionName, StudyDescription);
 		Response<ResponseBody> response = call.execute();
 		String result = new String(response.body().bytes());
 		System.out.println(result);
 		Map<String, Object> map = Util.String2Map(result);
 		return map;
 	}
-	
-	public Map<String, Object> addSeries(Long UserUID, String SeriesInstanceUID, String StudyInstanceUID, String SeriesNumber, String SeriesDate, String SeriesTime, String SeriesDescription, String Modality, String BodyPartExamined, String AcquisitionNumber) throws IOException{
-		Call<ResponseBody> call = doctorRequest.addPatientSeries(BaseConf.doctorUID, UserUID, SeriesInstanceUID, StudyInstanceUID, SeriesNumber, SeriesDate, SeriesTime, SeriesDescription, Modality, BodyPartExamined, AcquisitionNumber);
+
+	public Map<String, Object> addSeries(Long UserUID, String SeriesInstanceUID, String StudyInstanceUID,
+			String SeriesNumber, String SeriesDate, String SeriesTime, String SeriesDescription, String Modality,
+			String BodyPartExamined, String AcquisitionNumber) throws IOException {
+		Call<ResponseBody> call = doctorRequest.addPatientSeries(BaseConf.doctorUID, UserUID, SeriesInstanceUID,
+				StudyInstanceUID, SeriesNumber, SeriesDate, SeriesTime, SeriesDescription, Modality, BodyPartExamined,
+				AcquisitionNumber);
 		Response<ResponseBody> response = call.execute();
 		String result = new String(response.body().bytes());
 		System.out.println(result);
 		Map<String, Object> map = Util.String2Map(result);
 		return map;
 	}
-	
-	public Map<String, Object> addClinicalRecord(Long userUID, String serialNumber, String institutionId) throws IOException{
-		Call<ResponseBody> call = doctorRequest.addClinicalRecord(BaseConf.doctorUID, userUID, serialNumber, institutionId);
+
+	public Map<String, Object> addClinicalRecord(Long userUID, String serialNumber, Integer hospitalNo)
+			throws IOException {
+		Call<ResponseBody> call = doctorRequest.addClinicalRecord(BaseConf.doctorUID, userUID, serialNumber,
+				hospitalNo);
 		Response<ResponseBody> response = call.execute();
 		String result = new String(response.body().bytes());
 		System.out.println(result);
 		Map<String, Object> map = Util.String2Map(result);
 		return map;
 	}
-	
-	public Map<String, Object> getClinicalRecord(String serialNumber, String institutionId) throws IOException{
+
+	public Map<String, Object> getClinicalRecord(String serialNumber, String institutionId) throws IOException {
 		Call<ResponseBody> call = doctorRequest.getClinicalRecord(BaseConf.doctorUID, serialNumber, institutionId);
 		Response<ResponseBody> response = call.execute();
 		String result = new String(response.body().bytes());
@@ -107,19 +124,19 @@ public class HttpRequest extends BaseClass {
 		Map<String, Object> map = Util.String2Map(result);
 		return map;
 	}
-	
-	public Map<String, Object> addPatientImage(String sopInstanceUID, String filePath, String seriesInstanceUID, String serialNumber, String spaceLocation) throws IOException{
-		Call<ResponseBody> call = doctorRequest.addPatientImage(BaseConf.doctorUID, sopInstanceUID,
-				filePath, seriesInstanceUID,
-				serialNumber, spaceLocation);
+
+	public Map<String, Object> addPatientImage(String sopInstanceUID, String filePath, String seriesInstanceUID,
+			String serialNumber, String spaceLocation) throws IOException {
+		Call<ResponseBody> call = doctorRequest.addPatientImage(BaseConf.doctorUID, sopInstanceUID, filePath,
+				seriesInstanceUID, serialNumber, spaceLocation);
 		Response<ResponseBody> response = call.execute();
 		String result = new String(response.body().bytes());
 		System.out.println(result);
 		Map<String, Object> map = Util.String2Map(result);
 		return map;
 	}
-	
-	public Map<String, Object> getImageStorePath(String filePath) throws IOException{
+
+	public Map<String, Object> getImageStorePath(String filePath) throws IOException {
 		Call<ResponseBody> call = doctorRequest.getImageStorePath(BaseConf.doctorUID, filePath);
 		Response<ResponseBody> response = call.execute();
 		String result = new String(response.body().bytes());
@@ -128,61 +145,40 @@ public class HttpRequest extends BaseClass {
 		return map;
 	}
 	
-	public void uploadDcm(String strUrl, File file) throws IOException{
-		URL url = new URL(strUrl);
-		String[] querys = url.getQuery().split("&");
-		String base = url.getProtocol() + "://" + url.getHost() + ":" + url.getPort();
-		
-		String Expires = querys[0].substring(querys[0].indexOf('='), querys[0].length());
-		String OSSAccessKeyId = querys[1].substring(querys[1].indexOf('='), querys[1].length());
-		String Signature = querys[2].substring(querys[2].indexOf('='), querys[2].length());
-		
-		System.out.println(url.getQuery());
-		RequestBody requestFile =
-	            RequestBody.create(MediaType.parse("multipart/form-data"), file);
-		
-		MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestFile)
-				.createFormData("Expires", Expires)
-				.createFormData("OSSAccessKeyId", OSSAccessKeyId)
-				.createFormData("Signature", Signature);
-//		MultipartBody.Part expires = MultipartBody.Part.createFormData("Expires", Expires);
-//		MultipartBody.Part ossAccessKeyId = MultipartBody.Part.createFormData("OSSAccessKeyId", OSSAccessKeyId);
-//		MultipartBody.Part signature = MultipartBody.Part.createFormData("Signature", Signature);
-		
-//	    RequestBody Expires =
-//	            RequestBody.create(
-//	                    MediaType.parse("multipart/form-data"), expires);
-//	    RequestBody OSSAccessKeyId =
-//	            RequestBody.create(
-//	                    MediaType.parse("multipart/form-data"), ossAccessKeyId);
-//	    RequestBody Signature =
-//	            RequestBody.create(
-//	                    MediaType.parse("multipart/form-data"), signature);
-		UploadRequest uploadRequest = BaseClass.getUploadRetrofit(base).create(UploadRequest.class);
-		
-		Call<ResponseBody> call = uploadRequest.uploadDcm(url.getFile().substring(0,url.getFile().indexOf('?')),
-//				Expires,
-//				OSSAccessKeyId,
-//				Signature,
-				body);
-		call.enqueue(new Callback<ResponseBody>() {
-	        @Override
-	        public void onResponse(Call<ResponseBody> call,
-	                               Response<ResponseBody> response) {
-	        	System.out.println(response.isSuccessful());
-	        	try {
-					System.out.println(response.errorBody().string());
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-	            System.out.println("Upload : success");
-	        }
+	public Map<String, Object> createOrderByDoctor(Integer hospitalNo, String studyInstanceUID, Long long1) throws IOException {
+		Call<ResponseBody> call = doctorRequest.createOrderByDoctor(BaseConf.doctorUID, hospitalNo, studyInstanceUID, long1);
+		Response<ResponseBody> response = call.execute();
+		String result = new String(response.body().bytes());
+		System.out.println(result);
+		Map<String, Object> map = Util.String2Map(result);
+		return map;
+	}
 
-	        @Override
-	        public void onFailure(Call<ResponseBody> call, Throwable t) {
-	            System.out.println("Upload error:" + t.getMessage());
-	        }
+	public void uploadDcm(String strUrl, File file) throws IOException {
+		
+		URL url = new URL(strUrl);
+		
+		RequestBody fileBody = RequestBody.create(MediaType.parse("application/form-data"), file);
+		RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
+				.addFormDataPart("file", file.getName(), fileBody)
+				.build();
+		Request request = new Request.Builder().addHeader("Accept", "*/*").url(strUrl).put(requestBody).build();
+
+		BaseClass.getNewClient().newCall(request).enqueue(new Callback() {
+
+			@Override
+			public void onFailure(okhttp3.Call arg0, IOException arg1) {
+				// TODO Auto-generated method stub
+				System.out.println(arg1.getMessage());
+				doctorRequest.uploadNotify(BaseConf.doctorUID, url.getPath(), 0);
+			}
+
+			@Override
+			public void onResponse(okhttp3.Call arg0, okhttp3.Response arg1) throws IOException {
+				// TODO Auto-generated method stub
+				System.out.println(arg1.body().string());
+				doctorRequest.uploadNotify(BaseConf.doctorUID, url.getPath(), 1);
+			}
 		});
 	}
 }

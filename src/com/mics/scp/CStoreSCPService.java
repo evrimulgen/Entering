@@ -71,6 +71,7 @@ public class CStoreSCPService {
 //				System.out.println(attributes.getString(Tag.PatientID));
 
 				singleThreadExecutor.execute(new UploadDcm(attributes, newFile));
+				System.out.println("-----------------------------------------------+1------------------------------------");
 			} catch (Exception e) {
 				deleteFile(as, file);
 				throw new DicomServiceException(Status.ProcessingFailure, e);
