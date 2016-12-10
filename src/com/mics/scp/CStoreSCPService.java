@@ -31,12 +31,12 @@ public class CStoreSCPService {
 	private static final String PART_EXT = ".part";
 	private File storageDir;
 	private int status = 0;
-	private AttributesFormat filePathFormat = null;
+	private AttributesFormat filePathFormat = new AttributesFormat("{0020000D}\\{0020000E}\\{00080018}");
 	// 创建一个定长线程池，可控制线程最大并发数，超出的线程会在队列中等待。 eg:
 	// Runtime.getRuntime().availableProcessors()
-	private ExecutorService fixedThreadPool = Executors.newFixedThreadPool(BaseConf.Upload_Thread_MAX);
+//	private ExecutorService fixedThreadPool = Executors.newFixedThreadPool(BaseConf.Upload_Thread_MAX);
 	
-//	ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
+	ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
 
 	public CStoreSCPService(File storageDir, int status) {
 		this.storageDir = storageDir;
@@ -58,22 +58,19 @@ public class CStoreSCPService {
 			File file = new File(storageDir, iuid + PART_EXT);
 			try {
 				storeTo(as, as.createFileMetaInformation(iuid, cuid, tsuid), data, file);
-				File newFile = new File(storageDir, filePathFormat == null ? iuid : filePathFormat.format(parse(file)));
-				renameTo(as, file, newFile);
-
-				DicomInputStream dicomInputStream = new DicomInputStream(newFile);
-				Attributes attributes = dicomInputStream.readDataset(-1, Tag.PixelData);
-
-//				singleThreadExecutor.execute(new UploadDcm(attributes, newFile));
-				fixedThreadPool.execute(new UploadDcm(attributes, newFile));
 				
-				System.out.println("-----------------------------------------------+1------------------------------------");
+				Attributes attributes = parse(file);
+				File newFile = new File(storageDir, filePathFormat == null ? iuid : filePathFormat.format(attributes));
+				renameTo(as, file, newFile);
+				
+				singleThreadExecutor.execute(new UploadDcm(attributes, newFile));
+//				fixedThreadPool.execute(new UploadDcm(attributes, newFile));
+				
 			} catch (Exception e) {
 				deleteFile(as, file);
 				throw new DicomServiceException(Status.ProcessingFailure, e);
 			}
 		}
-
 	};
 
 	private void storeTo(Association as, Attributes fmi, PDVInputStream data, File file) throws IOException {

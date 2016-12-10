@@ -86,7 +86,7 @@ public class HttpRequest extends BaseClass {
 				sopInstanceUID);
 		Response<ResponseBody> response = call.execute();
 		String result = new String(response.body().bytes());
-		System.out.println(result);
+//		System.out.println(result);
 		Map<String, Object> map = Util.String2Map(result);
 		return map;
 	}

@@ -8,6 +8,9 @@ import java.util.Map;
 
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
+import org.dcm4che3.io.DicomInputStream;
+import org.dcm4che3.io.DicomInputStream.IncludeBulkData;
+import org.dcm4che3.util.SafeClose;
 
 import com.mics.conf.BaseConf;
 import com.mics.httpRequest.BaseClass;
@@ -19,11 +22,12 @@ public class UploadDcm implements Runnable {
 	private HttpRequest httpRequest;
 	private String filePath;
 
-	public UploadDcm(Attributes attributes, File dcmFile) {
+	public UploadDcm(Attributes attributes, File file) {
 		this.attributes = attributes;
-		this.dcmFile = dcmFile;
+		this.dcmFile = file;
 		this.httpRequest = new HttpRequest();
 	}
+
 
 	@Override
 	public void run() {
@@ -38,7 +42,7 @@ public class UploadDcm implements Runnable {
 				return;
 
 			if (BaseClass.getStudyCache().get(attributes.getString(Tag.StudyInstanceUID)) == null) {
-				creatPatient();//通过创建病人，获取userUID
+				creatPatient();// 通过创建病人，获取userUID
 			}
 
 			if (Double.valueOf((Double) result.get("studyInstanceUID")) != 1.0) {
@@ -52,22 +56,23 @@ public class UploadDcm implements Runnable {
 			}
 
 			addPatientImage();
-			
+
 			uploadDcm();
-			
+
 		} catch (IOException e) {
 			e.printStackTrace();
 			/*
 			 * 错误处理.....
 			 * 
 			 */
+			 System.out.println(attributes.getString(Tag.StudyInstanceUID));
 		}
 	}
 
-	private void creatPatient() throws NumberFormatException, IOException {
+	private Boolean creatPatient() throws NumberFormatException, IOException {
 		Calendar calendar = Calendar.getInstance();
 		String patientAge = null;
-		if(null != attributes.getString(Tag.PatientAge)){
+		if (null != attributes.getString(Tag.PatientAge)) {
 			patientAge = attributes.getString(Tag.PatientAge);
 			patientAge = attributes.getString(Tag.PatientAge).substring(0, patientAge.length() - 1);
 		}
@@ -78,22 +83,25 @@ public class UploadDcm implements Runnable {
 		Map<String, Object> map = httpRequest.creatPatientWithNo(attributes.getString(Tag.PatientName),
 				attributes.getString(Tag.PatientSex, "F").equals("F") ? "0" : "1", patientAge,
 				attributes.getString(Tag.PatientID), BaseConf.hospitalNo + "_" + attributes.getString(Tag.PatientID));
-		
-		//将userUID插入study缓存中
+
+		// 将userUID插入study缓存中
 		BaseClass.addStudyCache(attributes.getString(Tag.StudyInstanceUID), map.get("userUID"));
+
+		return (Double) map.get("errorCode") == 0.0;
 	}
 
-	private void addStudy() throws IOException {
+	private Boolean addStudy() throws IOException {
 		Map<String, Object> map = httpRequest.addStudy(
 				BaseClass.getStudyCache().get(attributes.getString(Tag.StudyInstanceUID)),
 				attributes.getString(Tag.StudyInstanceUID), attributes.getString(Tag.PatientName),
 				attributes.getString(Tag.PatientID), attributes.getString(Tag.StudyDate),
 				attributes.getString(Tag.StudyTime), attributes.getString(Tag.ModalitiesInStudy),
 				attributes.getString(Tag.InstitutionName), attributes.getString(Tag.StudyDescription));
-		
+
+		return (Double) map.get("errorCode") == 0.0;
 	}
 
-	private void addSeries() throws IOException {
+	private Boolean addSeries() throws IOException {
 		Map<String, Object> map = httpRequest.addSeries(
 				BaseClass.getStudyCache().get(attributes.getString(Tag.StudyInstanceUID)),
 				attributes.getString(Tag.SeriesInstanceUID), attributes.getString(Tag.StudyInstanceUID),
@@ -101,39 +109,45 @@ public class UploadDcm implements Runnable {
 				attributes.getString(Tag.SeriesTime), attributes.getString(Tag.SeriesDescription),
 				attributes.getString(Tag.Modality), attributes.getString(Tag.BodyPartExamined),
 				attributes.getString(Tag.AcquisitionNumber));
+
+		return (Double) map.get("errorCode") == 0.0;
 	}
 
-	private void addPatientImage() throws IOException {
-		filePath = BaseConf.Dcm_PreFilePath + BaseClass.getStudyCache().get(attributes.getString(Tag.StudyInstanceUID)) + "/"
-				+ attributes.getString(Tag.StudyInstanceUID) + "/" + attributes.getString(Tag.SeriesInstanceUID) + "/"
-				+ attributes.getString(Tag.SOPInstanceUID);
-		
+	private Boolean addPatientImage() throws IOException {
+		filePath = BaseConf.Dcm_PreFilePath + BaseClass.getStudyCache().get(attributes.getString(Tag.StudyInstanceUID))
+				+ "/" + attributes.getString(Tag.StudyInstanceUID) + "/" + attributes.getString(Tag.SeriesInstanceUID)
+				+ "/" + attributes.getString(Tag.SOPInstanceUID);
+
 		String spaceLocation = getSpaceLocation();
 		Map<String, Object> map = httpRequest.addPatientImage(attributes.getString(Tag.SOPInstanceUID), filePath,
 				attributes.getString(Tag.SeriesInstanceUID), attributes.getString(Tag.SeriesNumber), spaceLocation);
+
+		return (Double) map.get("errorCode") == 0.0;
 	}
 
-	private void addClinicalRecord() throws IOException {
-		Map<String, Object> map = httpRequest.addClinicalRecord(BaseClass.getStudyCache().get(attributes.getString(Tag.StudyInstanceUID)),
+	private Boolean addClinicalRecord() throws IOException {
+		Map<String, Object> map = httpRequest.addClinicalRecord(
+				BaseClass.getStudyCache().get(attributes.getString(Tag.StudyInstanceUID)),
 				attributes.getString(Tag.SeriesNumber), BaseConf.hospitalNo);
+		return (Double) map.get("errorCode") == 0.0;
 	}
-	
-	private void createOrderByDoctor() throws IOException{
+
+	private Boolean createOrderByDoctor() throws IOException {
 		Map<String, Object> map = httpRequest.createOrderByDoctor(BaseConf.hospitalNo,
 				attributes.getString(Tag.StudyInstanceUID),
 				BaseClass.getStudyCache().get(attributes.getString(Tag.StudyInstanceUID)));
+		return (Double) map.get("errorCode") == 0.0;
 	}
-	
-	private void uploadDcm() throws IOException{
+
+	private void uploadDcm() throws IOException {
 		filePath = BaseClass.getStudyCache().get(attributes.getString(Tag.StudyInstanceUID)) + "/"
 				+ attributes.getString(Tag.StudyInstanceUID) + "/" + attributes.getString(Tag.SeriesInstanceUID) + "/"
 				+ attributes.getString(Tag.SOPInstanceUID);
 		Map<String, Object> map = httpRequest.getImageStorePath(filePath);
 		ArrayList imageStorePath = (ArrayList) map.get("ImageStorePath");
-		System.out.println(imageStorePath.get(0));
+		// System.out.println(imageStorePath.get(0));
 		httpRequest.uploadDcm((String) imageStorePath.get(0), dcmFile);
 	}
-
 
 	/*
 	 * 计算DCM文件spacelocation
@@ -177,6 +191,16 @@ public class UploadDcm implements Runnable {
 			return String.valueOf(value);
 		} catch (Exception e) {
 			return "0.0"; // set default value
+		}
+	}
+
+	private static Attributes parse(File file) throws IOException {
+		DicomInputStream in = new DicomInputStream(file);
+		try {
+			in.setIncludeBulkData(IncludeBulkData.NO);
+			return in.readDataset(-1, Tag.PixelData);
+		} finally {
+			SafeClose.close(in);
 		}
 	}
 }
