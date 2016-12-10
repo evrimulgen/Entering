@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
@@ -35,9 +34,9 @@ public class CStoreSCPService {
 	private AttributesFormat filePathFormat = null;
 	// 创建一个定长线程池，可控制线程最大并发数，超出的线程会在队列中等待。 eg:
 	// Runtime.getRuntime().availableProcessors()
-//	private ExecutorService fixedThreadPool = Executors.newFixedThreadPool(BaseConf.Upload_Thread_MAX);
+	private ExecutorService fixedThreadPool = Executors.newFixedThreadPool(BaseConf.Upload_Thread_MAX);
 	
-	ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
+//	ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
 
 	public CStoreSCPService(File storageDir, int status) {
 		this.storageDir = storageDir;
@@ -64,13 +63,10 @@ public class CStoreSCPService {
 
 				DicomInputStream dicomInputStream = new DicomInputStream(newFile);
 				Attributes attributes = dicomInputStream.readDataset(-1, Tag.PixelData);
-//				System.out.println(attributes.getString(Tag.PatientName));
-//				System.out.println(attributes.getString(Tag.StudyInstanceUID));
-//				System.out.println(attributes.getString(Tag.SeriesInstanceUID));
-//				System.out.println(attributes.getString(Tag.SOPInstanceUID));
-//				System.out.println(attributes.getString(Tag.PatientID));
 
-				singleThreadExecutor.execute(new UploadDcm(attributes, newFile));
+//				singleThreadExecutor.execute(new UploadDcm(attributes, newFile));
+				fixedThreadPool.execute(new UploadDcm(attributes, newFile));
+				
 				System.out.println("-----------------------------------------------+1------------------------------------");
 			} catch (Exception e) {
 				deleteFile(as, file);

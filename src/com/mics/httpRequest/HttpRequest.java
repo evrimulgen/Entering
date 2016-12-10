@@ -20,6 +20,10 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
 
+/**
+ * @author 72338
+ *
+ */
 public class HttpRequest extends BaseClass {
 
 	private DoctorRequest doctorRequest;
@@ -31,6 +35,14 @@ public class HttpRequest extends BaseClass {
 		this.g = gb.create();
 	}
 
+	
+	/**
+	 * 医生登陆
+	 * 
+	 * @return
+	 * @throws IOException
+	 * 
+	 */
 	public Boolean DoctorLogin() throws IOException {
 		Call<ResponseBody> call = doctorRequest.doctorLogin(BaseConf.username, BaseConf.password,
 				Util.getToken(BaseConf.username, BaseConf.password));
@@ -58,6 +70,16 @@ public class HttpRequest extends BaseClass {
 	// System.out.println(response.body().string());
 	// }
 
+	/**
+	 * 查询记录
+	 * 
+	 * @param studyInstanceUID
+	 * @param seriesInstanceUID
+	 * @param sopInstanceUID
+	 * @return
+	 * @throws IOException
+	 * 
+	 */
 	public Map<String, Object> queryRecord(String studyInstanceUID, String seriesInstanceUID, String sopInstanceUID)
 			throws IOException {
 		Call<ResponseBody> call = doctorRequest.queryRecord(BaseConf.doctorUID, studyInstanceUID, seriesInstanceUID,
@@ -69,6 +91,17 @@ public class HttpRequest extends BaseClass {
 		return map;
 	}
 
+	/**
+	 * 创建病人
+	 * 
+	 * @param name
+	 * @param sex
+	 * @param i
+	 * @param patientID
+	 * @param username
+	 * @return
+	 * @throws IOException
+	 */
 	public Map<String, Object> creatPatientWithNo(String name, String sex, String i, String patientID, String username)
 			throws IOException {
 		Call<ResponseBody> call = doctorRequest.creatPatientWithNo(BaseConf.doctorUID, name, sex, i, patientID,
@@ -80,6 +113,21 @@ public class HttpRequest extends BaseClass {
 		return map;
 	}
 
+	/**
+	 * 新增study
+	 * 
+	 * @param UserUID
+	 * @param studyInstanceUID
+	 * @param patientName
+	 * @param patientUID
+	 * @param StudyDate
+	 * @param StudyTime
+	 * @param ModalitiesInStudy
+	 * @param InstitutionName
+	 * @param StudyDescription
+	 * @return
+	 * @throws IOException
+	 */
 	public Map<String, Object> addStudy(Long UserUID, String studyInstanceUID, String patientName, String patientUID,
 			String StudyDate, String StudyTime, String ModalitiesInStudy, String InstitutionName,
 			String StudyDescription) throws IOException {
@@ -92,6 +140,24 @@ public class HttpRequest extends BaseClass {
 		return map;
 	}
 
+	
+	
+	/**
+	 * 新增series
+	 * 
+	 * @param UserUID
+	 * @param SeriesInstanceUID
+	 * @param StudyInstanceUID
+	 * @param SeriesNumber
+	 * @param SeriesDate
+	 * @param SeriesTime
+	 * @param SeriesDescription
+	 * @param Modality
+	 * @param BodyPartExamined
+	 * @param AcquisitionNumber
+	 * @return
+	 * @throws IOException
+	 */
 	public Map<String, Object> addSeries(Long UserUID, String SeriesInstanceUID, String StudyInstanceUID,
 			String SeriesNumber, String SeriesDate, String SeriesTime, String SeriesDescription, String Modality,
 			String BodyPartExamined, String AcquisitionNumber) throws IOException {
@@ -105,6 +171,15 @@ public class HttpRequest extends BaseClass {
 		return map;
 	}
 
+	/**
+	 * 关联病历号
+	 * 
+	 * @param userUID
+	 * @param serialNumber
+	 * @param hospitalNo
+	 * @return
+	 * @throws IOException
+	 */
 	public Map<String, Object> addClinicalRecord(Long userUID, String serialNumber, Integer hospitalNo)
 			throws IOException {
 		Call<ResponseBody> call = doctorRequest.addClinicalRecord(BaseConf.doctorUID, userUID, serialNumber,
@@ -116,6 +191,14 @@ public class HttpRequest extends BaseClass {
 		return map;
 	}
 
+	/**
+	 * 获取病历号
+	 * 
+	 * @param serialNumber
+	 * @param institutionId
+	 * @return
+	 * @throws IOException
+	 */
 	public Map<String, Object> getClinicalRecord(String serialNumber, String institutionId) throws IOException {
 		Call<ResponseBody> call = doctorRequest.getClinicalRecord(BaseConf.doctorUID, serialNumber, institutionId);
 		Response<ResponseBody> response = call.execute();
@@ -125,6 +208,19 @@ public class HttpRequest extends BaseClass {
 		return map;
 	}
 
+	
+	
+	/**
+	 * 新增Image
+	 * 
+	 * @param sopInstanceUID
+	 * @param filePath
+	 * @param seriesInstanceUID
+	 * @param serialNumber
+	 * @param spaceLocation
+	 * @return
+	 * @throws IOException
+	 */
 	public Map<String, Object> addPatientImage(String sopInstanceUID, String filePath, String seriesInstanceUID,
 			String serialNumber, String spaceLocation) throws IOException {
 		Call<ResponseBody> call = doctorRequest.addPatientImage(BaseConf.doctorUID, sopInstanceUID, filePath,
@@ -136,6 +232,15 @@ public class HttpRequest extends BaseClass {
 		return map;
 	}
 
+	
+	
+	/**
+	 * 获取Image上传路径
+	 * 
+	 * @param filePath
+	 * @return
+	 * @throws IOException
+	 */
 	public Map<String, Object> getImageStorePath(String filePath) throws IOException {
 		Call<ResponseBody> call = doctorRequest.getImageStorePath(BaseConf.doctorUID, filePath);
 		Response<ResponseBody> response = call.execute();
@@ -145,6 +250,15 @@ public class HttpRequest extends BaseClass {
 		return map;
 	}
 	
+	/**
+	 * 创建报告订单
+	 * 
+	 * @param hospitalNo
+	 * @param studyInstanceUID
+	 * @param long1
+	 * @return
+	 * @throws IOException
+	 */
 	public Map<String, Object> createOrderByDoctor(Integer hospitalNo, String studyInstanceUID, Long long1) throws IOException {
 		Call<ResponseBody> call = doctorRequest.createOrderByDoctor(BaseConf.doctorUID, hospitalNo, studyInstanceUID, long1);
 		Response<ResponseBody> response = call.execute();
@@ -154,6 +268,15 @@ public class HttpRequest extends BaseClass {
 		return map;
 	}
 
+	
+	
+	/**
+	 * 上传DCM文件
+	 * 
+	 * @param strUrl
+	 * @param file
+	 * @throws IOException
+	 */
 	public void uploadDcm(String strUrl, File file) throws IOException {
 		
 		URL url = new URL(strUrl);

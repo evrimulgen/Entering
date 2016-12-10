@@ -44,7 +44,4 @@ public class Util {
 		return g.fromJson(object, new TypeToken<Map<String, Object>>() {}.getType());
 	}
 	
-//	public static synchronized Long Double2Long(Double src){
-//		return 
-//	}
 }

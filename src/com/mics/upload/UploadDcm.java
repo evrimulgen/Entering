@@ -31,11 +31,14 @@ public class UploadDcm implements Runnable {
 			Map<String, Object> result = httpRequest.queryRecord(attributes.getString(Tag.StudyInstanceUID),
 					attributes.getString(Tag.SeriesInstanceUID), attributes.getString(Tag.SOPInstanceUID));
 
+			/*
+			 * 若文件存在，则不上传
+			 */
 			if ((boolean) result.get("ObjectExist") == true)
 				return;
 
 			if (BaseClass.getStudyCache().get(attributes.getString(Tag.StudyInstanceUID)) == null) {
-				creatPatient();
+				creatPatient();//通过创建病人，获取userUID
 			}
 
 			if (Double.valueOf((Double) result.get("studyInstanceUID")) != 1.0) {
@@ -54,6 +57,10 @@ public class UploadDcm implements Runnable {
 			
 		} catch (IOException e) {
 			e.printStackTrace();
+			/*
+			 * 错误处理.....
+			 * 
+			 */
 		}
 	}
 
@@ -72,6 +79,7 @@ public class UploadDcm implements Runnable {
 				attributes.getString(Tag.PatientSex, "F").equals("F") ? "0" : "1", patientAge,
 				attributes.getString(Tag.PatientID), BaseConf.hospitalNo + "_" + attributes.getString(Tag.PatientID));
 		
+		//将userUID插入study缓存中
 		BaseClass.addStudyCache(attributes.getString(Tag.StudyInstanceUID), map.get("userUID"));
 	}
 
@@ -127,6 +135,10 @@ public class UploadDcm implements Runnable {
 	}
 
 
+	/*
+	 * 计算DCM文件spacelocation
+	 * 
+	 */
 	private String getSpaceLocation() {
 		try {
 			// 计算病人向量上的投影

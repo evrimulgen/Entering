@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.mics.conf.BaseConf;
 import com.mics.interceptors.NetLoginInterceptor;
 import com.mics.interceptors.checkLoginInterceptor;
