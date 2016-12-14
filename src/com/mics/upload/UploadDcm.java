@@ -59,6 +59,7 @@ public class UploadDcm implements Runnable {
 
 			uploadDcm();
 
+//			System.gc();
 		} catch (IOException e) {
 			e.printStackTrace();
 			/*
@@ -156,8 +157,10 @@ public class UploadDcm implements Runnable {
 	private String getSpaceLocation() {
 		try {
 			// 计算病人向量上的投影
-			String[] positionStrings = attributes.getString(Tag.ImagePositionPatient).split(",");
-			String[] orientationStrings = attributes.getString(Tag.ImageOrientationPatient).split(",");
+//			String[] positionStrings = attributes.getString(Tag.ImagePositionPatient).split(",");
+//			String[] orientationStrings = attributes.getString(Tag.ImageOrientationPatient).split(",");
+			double[] positionStrings = attributes.getDoubles(Tag.ImagePositionPatient);
+			double[] orientationStrings = attributes.getDoubles(Tag.ImageOrientationPatient);
 			double[] positionMatrix = { 0, 0, 0 };
 			double[] orientationMatrix = { 1, 0, 0, 0, 1, 0, 0, 0, 1 };
 
@@ -188,19 +191,10 @@ public class UploadDcm implements Runnable {
 
 			double value = positionMatrix[0] * orientationMatrix[6] + positionMatrix[1] * orientationMatrix[7]
 					+ positionMatrix[2] * orientationMatrix[8];
+			System.out.println("-------------------->"+String.valueOf(value));
 			return String.valueOf(value);
 		} catch (Exception e) {
 			return "0.0"; // set default value
-		}
-	}
-
-	private static Attributes parse(File file) throws IOException {
-		DicomInputStream in = new DicomInputStream(file);
-		try {
-			in.setIncludeBulkData(IncludeBulkData.NO);
-			return in.readDataset(-1, Tag.PixelData);
-		} finally {
-			SafeClose.close(in);
 		}
 	}
 }

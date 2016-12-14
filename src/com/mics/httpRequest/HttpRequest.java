@@ -279,6 +279,7 @@ public class HttpRequest extends BaseClass {
 	 */
 	public void uploadDcm(String strUrl, File file) throws IOException {
 		
+		Boolean success = false;
 		URL url = new URL(strUrl);
 		
 		RequestBody fileBody = RequestBody.create(MediaType.parse("application/form-data"), file);
