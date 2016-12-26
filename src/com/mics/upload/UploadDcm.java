@@ -146,7 +146,6 @@ public class UploadDcm implements Runnable {
 				+ attributes.getString(Tag.SOPInstanceUID);
 		Map<String, Object> map = httpRequest.getImageStorePath(filePath);
 		ArrayList imageStorePath = (ArrayList) map.get("ImageStorePath");
-		// System.out.println(imageStorePath.get(0));
 		httpRequest.uploadDcm((String) imageStorePath.get(0), dcmFile);
 	}
 
@@ -157,8 +156,6 @@ public class UploadDcm implements Runnable {
 	private String getSpaceLocation() {
 		try {
 			// 计算病人向量上的投影
-//			String[] positionStrings = attributes.getString(Tag.ImagePositionPatient).split(",");
-//			String[] orientationStrings = attributes.getString(Tag.ImageOrientationPatient).split(",");
 			double[] positionStrings = attributes.getDoubles(Tag.ImagePositionPatient);
 			double[] orientationStrings = attributes.getDoubles(Tag.ImageOrientationPatient);
 			double[] positionMatrix = { 0, 0, 0 };
@@ -191,7 +188,6 @@ public class UploadDcm implements Runnable {
 
 			double value = positionMatrix[0] * orientationMatrix[6] + positionMatrix[1] * orientationMatrix[7]
 					+ positionMatrix[2] * orientationMatrix[8];
-			System.out.println("-------------------->"+String.valueOf(value));
 			return String.valueOf(value);
 		} catch (Exception e) {
 			return "0.0"; // set default value

@@ -6,6 +6,7 @@ public class BaseConf {
 	public static String username = "meinian";
 	public static String password = "123456";
 	public static Integer doctorUID = null;
+	//study缓存
 	public static int studyCache_Max = 10;
 	public static Integer hospitalNo = 444444;
 
@@ -19,6 +20,12 @@ public class BaseConf {
 
 	// 上传线程数MAX
 //	public static int Upload_Thread_MAX = 10;
+	
+	//RabbitMQ配置
+	public static String RM_username = "raymed";
+	public static String RM_password = "R_aymed89909091";
+	public static String RM_host = "hahateam.tpddns.cn";
+	public static int RM_port = 5672; 
 
 	public static Integer getDoctorUID() {
 		return doctorUID;
@@ -35,4 +42,29 @@ public class BaseConf {
 	public static void setHospitalNo(Integer hospitalNo) {
 		BaseConf.hospitalNo = hospitalNo;
 	}
+
+	public static String getRM_password() {
+		return RM_password;
+	}
+
+	public static void setRM_password(String rM_password) {
+		RM_password = rM_password;
+	}
+
+	public static String getRM_host() {
+		return RM_host;
+	}
+
+	public static void setRM_host(String rM_host) {
+		RM_host = rM_host;
+	}
+
+	public static int getRM_port() {
+		return RM_port;
+	}
+
+	public static void setRM_port(int rM_port) {
+		RM_port = rM_port;
+	}
+	
 }

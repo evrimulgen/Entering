@@ -21,7 +21,8 @@ public class NetLoginInterceptor implements Interceptor {
 	public Response intercept(Chain chain) throws IOException {
 		Request request = chain.request();
 
-		
+//		System.out.println(request.toString());
+		System.out.println(request.tag());
 		Response response = chain.proceed(request);
 		
 		

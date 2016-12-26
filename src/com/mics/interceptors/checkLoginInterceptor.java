@@ -11,7 +11,7 @@ public class checkLoginInterceptor implements Interceptor{
 	public Response intercept(Chain chain) throws IOException {
 		Request request = chain.request();
 //		System.out.println("----------------------------------------------------------------------------");
-//		System.out.println(request.headers().toString());
+		System.out.println(request.headers().toString());
 		Response response = chain.proceed(request);
 //		System.out.println(response.headers().toString());
 //		System.out.println("----------------------------------------------------------------------------");

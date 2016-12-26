@@ -37,8 +37,9 @@ public class BaseClass {
 					return cookies != null ? cookies : new ArrayList<Cookie>();
 				}
 			})
-//					.addInterceptor(new NetLoginInterceptor())
-					.addNetworkInterceptor(new checkLoginInterceptor()).build();
+					.addInterceptor(new NetLoginInterceptor())
+//					.addNetworkInterceptor(new checkLoginInterceptor())
+					.build();
 
 			retrofit = new Retrofit.Builder().baseUrl(HttpUrl.parse(BaseConf.baseURL))
 					.addConverterFactory(GsonConverterFactory.create()).client(client).build();

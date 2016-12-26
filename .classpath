@@ -8,8 +8,6 @@
 	<classpathentry kind="lib" path="lib/okhttp-3.4.2.jar"/>
 	<classpathentry kind="lib" path="lib/okio-1.11.0.jar"/>
 	<classpathentry kind="lib" path="lib/retrofit-2.1.0.jar"/>
-	<classpathentry kind="lib" path="lib/c3p0-0.9.1.jar"/>
-	<classpathentry kind="lib" path="lib/mysql-connector-java-5.1.40-bin.jar"/>
 	<classpathentry kind="lib" path="lib/clibwrapper_jiio-1.2-pre-dr-b04.jar"/>
 	<classpathentry kind="lib" path="lib/commons-cli-1.2.jar"/>
 	<classpathentry kind="lib" path="lib/dcm4che-core-3.3.7.jar"/>
@@ -23,5 +21,6 @@
 	<classpathentry kind="lib" path="lib/log4j-1.2.17.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-api-1.7.5.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-log4j12-1.7.5.jar"/>
+	<classpathentry kind="lib" path="lib/amqp-client-4.0.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
