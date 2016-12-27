@@ -2,7 +2,7 @@ package com.mics.conf;
 
 public class BaseConf {
 
-	public static String baseURL = "http://192.168.200.116";
+	public static String baseURL = "http://localhost:8080/mics/";
 	public static String username = "meinian";
 	public static String password = "123456";
 	public static Integer doctorUID = null;

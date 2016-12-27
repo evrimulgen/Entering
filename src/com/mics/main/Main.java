@@ -9,17 +9,17 @@ import com.mics.scp.StoreSCP;
 public class Main {
 
 	public static void main(String[] args) throws IOException {
-//		HttpRequest httpRequest = new HttpRequest();
-//		httpRequest.DoctorLogin();
-//		StoreSCP storeSCP = new StoreSCP();
-//		storeSCP.startSCPServer();
+		HttpRequest httpRequest = new HttpRequest();
+		httpRequest.DoctorLogin();
+		StoreSCP storeSCP = new StoreSCP();
+		storeSCP.startSCPServer();
 		
-		WorkService workService = new WorkService();
-		try {
-			workService.start();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		WorkService workService = new WorkService();
+//		try {
+//			workService.start();
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 }

@@ -2,8 +2,12 @@ package com.mics.httpRequest;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.StandardSocketOptions;
 import java.net.URL;
+import java.util.Date;
 import java.util.Map;
+
+import org.apache.log4j.Logger;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -29,6 +33,7 @@ public class HttpRequest extends BaseClass {
 	private DoctorRequest doctorRequest;
 	private static GsonBuilder gb = new GsonBuilder();
 	private Gson g;
+	private Logger LOG = Logger.getLogger(com.mics.httpRequest.HttpRequest.class);
 
 	public HttpRequest() {
 		this.doctorRequest = BaseClass.getRetrofit().create(DoctorRequest.class);
@@ -282,27 +287,35 @@ public class HttpRequest extends BaseClass {
 		Boolean success = false;
 		URL url = new URL(strUrl);
 		
-		RequestBody fileBody = RequestBody.create(MediaType.parse("application/form-data"), file);
-		RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
-				.addFormDataPart("file", file.getName(), fileBody)
-				.build();
-		Request request = new Request.Builder().addHeader("Accept", "*/*").url(strUrl).put(requestBody).build();
+		RequestBody fileBody = RequestBody.create(null, file);
+//		RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
+//				.addFormDataPart("file", file.getName(), fileBody)
+//				.build();
+		
+		Request request = new Request.Builder().addHeader("Accept", "*/*")
+				.url(strUrl).put(fileBody).build();
 
-		BaseClass.getNewClient().newCall(request).enqueue(new Callback() {
-
-			@Override
-			public void onFailure(okhttp3.Call arg0, IOException arg1) {
-				// TODO Auto-generated method stub
-				System.out.println(arg1.getMessage());
-				doctorRequest.uploadNotify(BaseConf.doctorUID, url.getPath(), 0);
-			}
-
-			@Override
-			public void onResponse(okhttp3.Call arg0, okhttp3.Response arg1) throws IOException {
-				// TODO Auto-generated method stub
-				System.out.println(arg1.body().string());
-				doctorRequest.uploadNotify(BaseConf.doctorUID, url.getPath(), 1);
-			}
-		});
+//		BaseClass.getNewClient().newCall(request).enqueue(new Callback() {
+//
+//			@Override
+//			public void onFailure(okhttp3.Call arg0, IOException arg1) {
+//				// TODO Auto-generated method stub
+//				System.out.println(arg1.getMessage());
+//				doctorRequest.uploadNotify(BaseConf.doctorUID, url.getPath(), 0);
+//			}
+//
+//			@Override
+//			public void onResponse(okhttp3.Call arg0, okhttp3.Response arg1) throws IOException {
+//				// TODO Auto-generated method stub
+//				System.out.println(arg1.body().string());
+//				doctorRequest.uploadNotify(BaseConf.doctorUID, url.getPath(), 1);
+//			}
+//		});
+		
+		okhttp3.Response response = BaseClass.getNewClient().newCall(request).execute();
+		LOG.error("erroe File : " + file.getPath());
+		if(response.header("ETag") == null || response.code() != 200){
+			LOG.error("File : " + file.getPath());
+		}
 	}
 }
