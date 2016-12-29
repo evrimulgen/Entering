@@ -295,27 +295,28 @@ public class HttpRequest extends BaseClass {
 		Request request = new Request.Builder().addHeader("Accept", "*/*")
 				.url(strUrl).put(fileBody).build();
 
-//		BaseClass.getNewClient().newCall(request).enqueue(new Callback() {
-//
-//			@Override
-//			public void onFailure(okhttp3.Call arg0, IOException arg1) {
-//				// TODO Auto-generated method stub
-//				System.out.println(arg1.getMessage());
-//				doctorRequest.uploadNotify(BaseConf.doctorUID, url.getPath(), 0);
-//			}
-//
-//			@Override
-//			public void onResponse(okhttp3.Call arg0, okhttp3.Response arg1) throws IOException {
-//				// TODO Auto-generated method stub
-//				System.out.println(arg1.body().string());
-//				doctorRequest.uploadNotify(BaseConf.doctorUID, url.getPath(), 1);
-//			}
-//		});
+		BaseClass.getNewClient().newCall(request).enqueue(new Callback() {
+
+			@Override
+			public void onFailure(okhttp3.Call arg0, IOException arg1) {
+				// TODO Auto-generated method stub
+				System.out.println(arg1.getMessage());
+				LOG.error("File : " + file.getPath());
+				doctorRequest.uploadNotify(BaseConf.doctorUID, url.getPath(), 0);
+			}
+
+			@Override
+			public void onResponse(okhttp3.Call arg0, okhttp3.Response arg1) throws IOException {
+				// TODO Auto-generated method stub
+				System.out.println("ETag:" + arg1.header("ETag"));
+				System.out.println("Code:" + arg1.code());
+				doctorRequest.uploadNotify(BaseConf.doctorUID, url.getPath(), 1);
+			}
+		});
 		
-		okhttp3.Response response = BaseClass.getNewClient().newCall(request).execute();
-		LOG.error("erroe File : " + file.getPath());
-		if(response.header("ETag") == null || response.code() != 200){
-			LOG.error("File : " + file.getPath());
-		}
+//		okhttp3.Response response = BaseClass.getNewClient().newCall(request).execute();
+//		if(response.header("ETag") == null || response.code() != 200){
+//			LOG.error("File : " + file.getPath());
+//		}
 	}
 }

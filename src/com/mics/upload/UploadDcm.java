@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.io.DicomInputStream;
@@ -21,13 +22,13 @@ public class UploadDcm implements Runnable {
 	private File dcmFile = null;
 	private HttpRequest httpRequest;
 	private String filePath;
+	private Logger LOG = Logger.getLogger(com.mics.upload.UploadDcm.class);
 
 	public UploadDcm(Attributes attributes, File file) {
 		this.attributes = attributes;
 		this.dcmFile = file;
 		this.httpRequest = new HttpRequest();
 	}
-
 
 	@Override
 	public void run() {
@@ -59,18 +60,20 @@ public class UploadDcm implements Runnable {
 
 			uploadDcm();
 
-//			System.gc();
-		} catch (IOException e) {
+			// System.gc();
+		} catch (Exception e) {
 			e.printStackTrace();
 			/*
 			 * 错误处理.....
 			 * 
 			 */
-			 System.out.println(attributes.getString(Tag.StudyInstanceUID));
+			LOG.error("File : " + dcmFile.getPath());
+			
+			System.out.println(attributes.getString(Tag.StudyInstanceUID));
 		}
 	}
 
-	private Boolean creatPatient() throws NumberFormatException, IOException {
+	private void creatPatient() throws Exception {
 		Calendar calendar = Calendar.getInstance();
 		String patientAge = null;
 		if (null != attributes.getString(Tag.PatientAge)) {
@@ -88,10 +91,12 @@ public class UploadDcm implements Runnable {
 		// 将userUID插入study缓存中
 		BaseClass.addStudyCache(attributes.getString(Tag.StudyInstanceUID), map.get("userUID"));
 
-		return (Double) map.get("errorCode") == 0.0;
+		if ((Double) map.get("errorCode") != 0.0 & (Double) map.get("errorCode") != 4.0) {
+			throw new Exception("creatPatient Error!");
+		}
 	}
 
-	private Boolean addStudy() throws IOException {
+	private void addStudy() throws Exception {
 		Map<String, Object> map = httpRequest.addStudy(
 				BaseClass.getStudyCache().get(attributes.getString(Tag.StudyInstanceUID)),
 				attributes.getString(Tag.StudyInstanceUID), attributes.getString(Tag.PatientName),
@@ -99,10 +104,12 @@ public class UploadDcm implements Runnable {
 				attributes.getString(Tag.StudyTime), attributes.getString(Tag.ModalitiesInStudy),
 				attributes.getString(Tag.InstitutionName), attributes.getString(Tag.StudyDescription));
 
-		return (Double) map.get("errorCode") == 0.0;
+		if ((Double) map.get("errorCode") != 0.0) {
+			throw new Exception("addStudy Error!");
+		}
 	}
 
-	private Boolean addSeries() throws IOException {
+	private void addSeries() throws Exception {
 		Map<String, Object> map = httpRequest.addSeries(
 				BaseClass.getStudyCache().get(attributes.getString(Tag.StudyInstanceUID)),
 				attributes.getString(Tag.SeriesInstanceUID), attributes.getString(Tag.StudyInstanceUID),
@@ -111,10 +118,12 @@ public class UploadDcm implements Runnable {
 				attributes.getString(Tag.Modality), attributes.getString(Tag.BodyPartExamined),
 				attributes.getString(Tag.AcquisitionNumber));
 
-		return (Double) map.get("errorCode") == 0.0;
+		if ((Double) map.get("errorCode") != 0.0) {
+			throw new Exception("addSeries Error!");
+		}
 	}
 
-	private Boolean addPatientImage() throws IOException {
+	private void addPatientImage() throws Exception {
 		filePath = BaseConf.Dcm_PreFilePath + BaseClass.getStudyCache().get(attributes.getString(Tag.StudyInstanceUID))
 				+ "/" + attributes.getString(Tag.StudyInstanceUID) + "/" + attributes.getString(Tag.SeriesInstanceUID)
 				+ "/" + attributes.getString(Tag.SOPInstanceUID);
@@ -123,21 +132,27 @@ public class UploadDcm implements Runnable {
 		Map<String, Object> map = httpRequest.addPatientImage(attributes.getString(Tag.SOPInstanceUID), filePath,
 				attributes.getString(Tag.SeriesInstanceUID), attributes.getString(Tag.SeriesNumber), spaceLocation);
 
-		return (Double) map.get("errorCode") == 0.0;
+		if ((Double) map.get("errorCode") != 0.0 & (Double) map.get("errorCode") != 14.0) {
+			throw new Exception("addPatientImage Error!");
+		}
 	}
 
-	private Boolean addClinicalRecord() throws IOException {
+	private void addClinicalRecord() throws Exception {
 		Map<String, Object> map = httpRequest.addClinicalRecord(
 				BaseClass.getStudyCache().get(attributes.getString(Tag.StudyInstanceUID)),
 				attributes.getString(Tag.SeriesNumber), BaseConf.hospitalNo);
-		return (Double) map.get("errorCode") == 0.0;
+		if ((Double) map.get("errorCode") != 0.0) {
+			throw new Exception("addClinicalRecord Error!");
+		}
 	}
 
-	private Boolean createOrderByDoctor() throws IOException {
+	private void createOrderByDoctor() throws Exception {
 		Map<String, Object> map = httpRequest.createOrderByDoctor(BaseConf.hospitalNo,
 				attributes.getString(Tag.StudyInstanceUID),
 				BaseClass.getStudyCache().get(attributes.getString(Tag.StudyInstanceUID)));
-		return (Double) map.get("errorCode") == 0.0;
+		if ((Double) map.get("errorCode") != 0.0) {
+			throw new Exception("createOrderByDoctor Error!");
+		}
 	}
 
 	private void uploadDcm() throws IOException {

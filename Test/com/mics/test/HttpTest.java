@@ -1,6 +1,6 @@
 package com.mics.test;
 
-import java.io.IOException;
+import java.io.FileNotFoundException;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -17,7 +17,7 @@ public class HttpTest {
 	}
 
 	@Test
-	public void test() throws InterruptedException {
-		
+	public void test() throws InterruptedException, FileNotFoundException {
 	}
+	
 }
