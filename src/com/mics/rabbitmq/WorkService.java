@@ -12,11 +12,11 @@ import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 
 public class WorkService {
-	private static final String EXCHANGE_NAME = "";
-	public static final String QUEUE_NAME ="";
-	private static final String ROUTINGKEY = "";	  
-	public static boolean durable = true;
-	public static boolean autoDelete = false;
+	private final String EXCHANGE_NAME = "";
+	public final String QUEUE_NAME ="";
+	private final String ROUTINGKEY = "";	  
+	public boolean durable = true;
+	public boolean autoDelete = false;
 
 	public void start() throws Exception {
 		ConnectionFactory factory = new ConnectionFactory();

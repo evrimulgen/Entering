@@ -22,8 +22,8 @@ public class BaseConf {
 //	public static int Upload_Thread_MAX = 10;
 	
 	//RabbitMQ配置
-	public static String RM_username = "raymed";
-	public static String RM_password = "R_aymed89909091";
+	public static String RM_username = "";
+	public static String RM_password = "";
 	public static String RM_host = "hahateam.tpddns.cn";
 	public static int RM_port = 5672; 
 
