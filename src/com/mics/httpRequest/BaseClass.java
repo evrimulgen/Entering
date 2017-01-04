@@ -60,8 +60,7 @@ public class BaseClass {
 	}
 
 	public static OkHttpClient getNewClient() {
-		return new OkHttpClient.Builder().addInterceptor(new NetLoginInterceptor())
-				.addNetworkInterceptor(new checkLoginInterceptor()).build();
+		return new OkHttpClient.Builder().build();
 	}
 
 }

@@ -1,11 +1,13 @@
 package com.mics.utils;
 
 import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 
 public class Util {
 	
@@ -41,7 +43,8 @@ public class Util {
 	
 	public static synchronized Map<String, Object> String2Map(String object){
 		Gson g = gb.create();
-		return g.fromJson(object, new TypeToken<Map<String, Object>>() {}.getType());
+//		return g.fromJson(object, new TypeToken<Map<String, Object>>() {}.getType());
+		return g.fromJson(object, HashMap.class);
 	}
 	
 }
