@@ -38,9 +38,11 @@ public class Cloud2Local {
 		JsonObject obj=parser.parse(reportRequest.getReportListAfterTime(date)).getAsJsonObject();
 		JsonArray array=obj.getAsJsonArray("reportList");
 		for(int i = 0; i < array.size(); i++){
-			ReportContentBack reportContentBack = (ReportContentBack)g.fromJson(array.get(0), ReportContentBack.class);
+			ReportContentBack reportContentBack = (ReportContentBack)g.fromJson(array.get(i), ReportContentBack.class);
+			System.out.println("---------------->"+reportContentBack);
 			String json = reportRequest.dowloadReport(Util.String2Map(array.get(i).toString()).get("reportPath").toString());
 			reportContentBack = JsonToObject(json, reportContentBack);
+			System.out.println(reportContentBack);
 		}
 	}
 	
@@ -49,9 +51,11 @@ public class Cloud2Local {
 		
 		Map<String, Object> map = Util.String2Map(json);
 		
-		reportContentBack.setReviewedResult(map.get("reviewedResult").toString());
-		reportContentBack.setRepresentation(map.get("representation").toString());
-		
+		reportContentBack.setReviewedResult(map.get("reviewedResult") == null ? "无" : map.get("reviewedResult").toString());
+		reportContentBack.setRepresentation(map.get("representation") == null ? "无" : map.get("representation").toString());
+		reportContentBack.setPartsResult(map.get("partsResult") == null ? "无" : map.get("partsResult").toString());
+		reportContentBack.setExamResult(map.get("examResult") == null ? "无" : map.get("examResult").toString());
+		reportContentBack.setSettingResult(map.get("settingResult") == null ? "无" : map.get("settingResult").toString());
 		return reportContentBack;
 	}
 

@@ -5,9 +5,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Date;
+import java.util.Map;
 
 import com.mics.conf.BaseConf;
 import com.mics.httpInterface.IReportRequest;
+import com.mics.utils.GetStatistics;
+import com.mics.utils.Util;
 
 import okhttp3.Request;
 import okhttp3.ResponseBody;
@@ -17,11 +20,13 @@ import retrofit2.Response;
 public class ReportRequest extends BaseClass {
 
 	private IReportRequest reportRequest;
+	private BaseConf baseConf = null;
 
 	private InputStream is = null;
 
 	public ReportRequest() {
 		this.reportRequest = BaseClass.getRetrofit().create(IReportRequest.class);
+		this.baseConf = BaseConf.getInstance();
 	}
 
 	/*
@@ -30,7 +35,7 @@ public class ReportRequest extends BaseClass {
 	 */
 	public String getReportListAfterTime(Date time) throws IOException {
 		// TODO Auto-generated method stub
-		Call<ResponseBody> call = reportRequest.getReportListAfterTime(BaseConf.doctorUID, time);
+		Call<ResponseBody> call = reportRequest.getReportListAfterTime(baseConf.getDoctorUID(), time);
 		Response<ResponseBody> response = call.execute();
 		String result = new String(response.body().bytes());
 		System.out.println(result);
@@ -54,6 +59,23 @@ public class ReportRequest extends BaseClass {
 		}
 		
 		return result.toString().replaceAll(" ", "");
+	}
+	
+	/*
+	 * 上传统计数据
+	 */
+	public boolean uploadStatistics() throws IOException{
+		GetStatistics getStatistics = new GetStatistics();
+		int registerCount = getStatistics.getRegisterCount();
+		int collection = getStatistics.getCollection();
+		Call<ResponseBody> call = reportRequest.uploadStatistics(baseConf.getDoctorUID(), registerCount, collection);
+		Response<ResponseBody> response = call.execute();
+		String result = new String(response.body().bytes());
+		Map<String, Object> map = Util.String2Map(result);
+		if((Double) map.get("errorCode") == 0.0){
+			return true;
+		}
+		return false;
 	}
 
 }

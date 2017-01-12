@@ -22,9 +22,11 @@ public class StoreSCP {
 	private final Connection conn = new Connection();
 	
 	private CStoreSCPService cStoreSCPService;
+	private BaseConf baseConf;
 	
 	public StoreSCP() throws IOException {
-		cStoreSCPService = new CStoreSCPService(new File(BaseConf.Scp_StorageDirectory), BaseConf.Scp_CStore_Status);
+		this.baseConf = BaseConf.getInstance();
+		cStoreSCPService = new CStoreSCPService(new File(baseConf.getScp_StorageDirectory()), baseConf.getScp_CStore_Status());
 		device.setDimseRQHandler(createServiceRegistry());
 		device.addConnection(conn);
 		device.addApplicationEntity(ae);
@@ -42,8 +44,8 @@ public class StoreSCP {
 	public void startSCPServer() {
 		try {
 			StoreSCP main = new StoreSCP();
-			main.ae.setAETitle(BaseConf.Scp_AETitle);
-	        main.conn.setPort(BaseConf.Scp_port);
+			main.ae.setAETitle(baseConf.getScp_AETitle());
+	        main.conn.setPort(baseConf.getScp_port());
 			main.conn.setMaxOpsInvoked(0);
 	        main.conn.setMaxOpsPerformed(0);
 			main.ae.addTransferCapability(new TransferCapability(null, "*", TransferCapability.Role.SCP, "*"));

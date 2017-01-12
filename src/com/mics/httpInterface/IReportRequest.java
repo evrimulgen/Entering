@@ -11,5 +11,8 @@ import retrofit2.http.Query;
 public interface IReportRequest {
 	
 	@GET("api/doctor/{userUID}/getReportListAfterTime")
-	Call<ResponseBody> getReportListAfterTime(@Path("userUID") Integer userUID,@Query("time") Date time);
+	Call<ResponseBody> getReportListAfterTime(@Path("userUID") Integer userUID, @Query("time") Date time);
+	
+	@GET("api/doctor/{userUID}/uploadStatistics")
+	Call<ResponseBody> uploadStatistics(@Path("userUID") Integer userUID, @Query("registerCount") int registerCount, @Query("collection") int collection);
 }

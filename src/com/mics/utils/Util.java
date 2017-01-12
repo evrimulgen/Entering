@@ -47,4 +47,14 @@ public class Util {
 		return g.fromJson(object, HashMap.class);
 	}
 	
+	public static <T> T fromJsonString(String str, Class<?> T){
+		Gson gson = new Gson();
+		try{
+			return (T) gson.fromJson(str, T);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 }

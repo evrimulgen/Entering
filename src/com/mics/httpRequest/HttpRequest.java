@@ -34,10 +34,12 @@ public class HttpRequest extends BaseClass {
 	private static GsonBuilder gb = new GsonBuilder();
 	private Gson g;
 	private Logger LOG = Logger.getLogger(com.mics.httpRequest.HttpRequest.class);
+	private BaseConf baseConf = null;
 
 	public HttpRequest() {
 		this.doctorRequest = BaseClass.getRetrofit().create(DoctorRequest.class);
 		this.g = gb.create();
+		this.baseConf = BaseConf.getInstance();
 	}
 
 	
@@ -49,8 +51,8 @@ public class HttpRequest extends BaseClass {
 	 * 
 	 */
 	public Boolean DoctorLogin() throws IOException {
-		Call<ResponseBody> call = doctorRequest.doctorLogin(BaseConf.username, BaseConf.password,
-				Util.getToken(BaseConf.username, BaseConf.password));
+		Call<ResponseBody> call = doctorRequest.doctorLogin(baseConf.getUsername(), baseConf.getPassword(),
+				Util.getToken(baseConf.getUsername(), baseConf.getPassword()));
 		Response<ResponseBody> response = call.execute();
 		String result = new String(response.body().bytes());
 		System.out.println(result);
@@ -62,8 +64,8 @@ public class HttpRequest extends BaseClass {
 			int doctorUID = (int)userUID;
 			int hospitalNo = (int)hospitalUID;
 			
-			BaseConf.setDoctorUID(doctorUID);
-			BaseConf.setHospitalNo(hospitalNo);
+			baseConf.setDoctorUID(doctorUID);
+			baseConf.setHospitalNo(hospitalNo);
 			return true;
 		}
 		return false;
@@ -87,7 +89,7 @@ public class HttpRequest extends BaseClass {
 	 */
 	public Map<String, Object> queryRecord(String studyInstanceUID, String seriesInstanceUID, String sopInstanceUID)
 			throws IOException {
-		Call<ResponseBody> call = doctorRequest.queryRecord(BaseConf.doctorUID, studyInstanceUID, seriesInstanceUID,
+		Call<ResponseBody> call = doctorRequest.queryRecord(baseConf.getDoctorUID(), studyInstanceUID, seriesInstanceUID,
 				sopInstanceUID);
 		Response<ResponseBody> response = call.execute();
 		String result = new String(response.body().bytes());
@@ -109,7 +111,7 @@ public class HttpRequest extends BaseClass {
 	 */
 	public Map<String, Object> creatPatientWithNo(String name, String sex, String i, String patientID, String username)
 			throws IOException {
-		Call<ResponseBody> call = doctorRequest.creatPatientWithNo(BaseConf.doctorUID, name, sex, i, patientID,
+		Call<ResponseBody> call = doctorRequest.creatPatientWithNo(baseConf.getDoctorUID(), name, sex, i, patientID,
 				username);
 		Response<ResponseBody> response = call.execute();
 		String result = new String(response.body().bytes());
@@ -136,7 +138,7 @@ public class HttpRequest extends BaseClass {
 	public Map<String, Object> addStudy(Long UserUID, String studyInstanceUID, String patientName, String patientUID,
 			String StudyDate, String StudyTime, String ModalitiesInStudy, String InstitutionName,
 			String StudyDescription) throws IOException {
-		Call<ResponseBody> call = doctorRequest.addPatientStudy(BaseConf.doctorUID, UserUID, studyInstanceUID,
+		Call<ResponseBody> call = doctorRequest.addPatientStudy(baseConf.getDoctorUID(), UserUID, studyInstanceUID,
 				patientName, patientUID, StudyDate, StudyTime, ModalitiesInStudy, InstitutionName, StudyDescription);
 		Response<ResponseBody> response = call.execute();
 		String result = new String(response.body().bytes());
@@ -166,7 +168,7 @@ public class HttpRequest extends BaseClass {
 	public Map<String, Object> addSeries(Long UserUID, String SeriesInstanceUID, String StudyInstanceUID,
 			String SeriesNumber, String SeriesDate, String SeriesTime, String SeriesDescription, String Modality,
 			String BodyPartExamined, String AcquisitionNumber) throws IOException {
-		Call<ResponseBody> call = doctorRequest.addPatientSeries(BaseConf.doctorUID, UserUID, SeriesInstanceUID,
+		Call<ResponseBody> call = doctorRequest.addPatientSeries(baseConf.getDoctorUID(), UserUID, SeriesInstanceUID,
 				StudyInstanceUID, SeriesNumber, SeriesDate, SeriesTime, SeriesDescription, Modality, BodyPartExamined,
 				AcquisitionNumber);
 		Response<ResponseBody> response = call.execute();
@@ -187,7 +189,7 @@ public class HttpRequest extends BaseClass {
 	 */
 	public Map<String, Object> addClinicalRecord(Long userUID, String serialNumber, Integer hospitalNo)
 			throws IOException {
-		Call<ResponseBody> call = doctorRequest.addClinicalRecord(BaseConf.doctorUID, userUID, serialNumber,
+		Call<ResponseBody> call = doctorRequest.addClinicalRecord(baseConf.getDoctorUID(), userUID, serialNumber,
 				hospitalNo);
 		Response<ResponseBody> response = call.execute();
 		String result = new String(response.body().bytes());
@@ -205,7 +207,7 @@ public class HttpRequest extends BaseClass {
 	 * @throws IOException
 	 */
 	public Map<String, Object> getClinicalRecord(String serialNumber, String institutionId) throws IOException {
-		Call<ResponseBody> call = doctorRequest.getClinicalRecord(BaseConf.doctorUID, serialNumber, institutionId);
+		Call<ResponseBody> call = doctorRequest.getClinicalRecord(baseConf.getDoctorUID(), serialNumber, institutionId);
 		Response<ResponseBody> response = call.execute();
 		String result = new String(response.body().bytes());
 		System.out.println(result);
@@ -228,7 +230,7 @@ public class HttpRequest extends BaseClass {
 	 */
 	public Map<String, Object> addPatientImage(String sopInstanceUID, String filePath, String seriesInstanceUID,
 			String serialNumber, String spaceLocation) throws IOException {
-		Call<ResponseBody> call = doctorRequest.addPatientImage(BaseConf.doctorUID, sopInstanceUID, filePath,
+		Call<ResponseBody> call = doctorRequest.addPatientImage(baseConf.getDoctorUID(), sopInstanceUID, filePath,
 				seriesInstanceUID, serialNumber, spaceLocation);
 		Response<ResponseBody> response = call.execute();
 		String result = new String(response.body().bytes());
@@ -247,7 +249,7 @@ public class HttpRequest extends BaseClass {
 	 * @throws IOException
 	 */
 	public Map<String, Object> getImageStorePath(String filePath) throws IOException {
-		Call<ResponseBody> call = doctorRequest.getImageStorePath(BaseConf.doctorUID, filePath);
+		Call<ResponseBody> call = doctorRequest.getImageStorePath(baseConf.getDoctorUID(), filePath);
 		Response<ResponseBody> response = call.execute();
 		String result = new String(response.body().bytes());
 		System.out.println(result);
@@ -265,7 +267,7 @@ public class HttpRequest extends BaseClass {
 	 * @throws IOException
 	 */
 	public Map<String, Object> createOrderByDoctor(Integer hospitalNo, String studyInstanceUID, Long long1) throws IOException {
-		Call<ResponseBody> call = doctorRequest.createOrderByDoctor(BaseConf.doctorUID, hospitalNo, studyInstanceUID, long1);
+		Call<ResponseBody> call = doctorRequest.createOrderByDoctor(baseConf.getDoctorUID(), hospitalNo, studyInstanceUID, long1);
 		Response<ResponseBody> response = call.execute();
 		String result = new String(response.body().bytes());
 		System.out.println(result);
@@ -302,7 +304,7 @@ public class HttpRequest extends BaseClass {
 				// TODO Auto-generated method stub
 				System.out.println(arg1.getMessage());
 				LOG.error("File : " + file.getPath());
-				doctorRequest.uploadNotify(BaseConf.doctorUID, url.getPath(), 0);
+				doctorRequest.uploadNotify(baseConf.getDoctorUID(), url.getPath(), 0);
 			}
 
 			@Override
@@ -310,7 +312,7 @@ public class HttpRequest extends BaseClass {
 				// TODO Auto-generated method stub
 				System.out.println("ETag:" + arg1.header("ETag"));
 				System.out.println("Code:" + arg1.code());
-				doctorRequest.uploadNotify(BaseConf.doctorUID, url.getPath(), 1);
+				doctorRequest.uploadNotify(baseConf.getDoctorUID(), url.getPath(), 1);
 			}
 		});
 		

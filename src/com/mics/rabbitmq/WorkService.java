@@ -17,12 +17,13 @@ public class WorkService {
 	private final String ROUTINGKEY = "";	  
 	public boolean durable = true;
 	public boolean autoDelete = false;
+	private BaseConf baseConf = BaseConf.getInstance();
 
 	public void start() throws Exception {
 		ConnectionFactory factory = new ConnectionFactory();
-		factory.setUsername(BaseConf.RM_username);
-		factory.setPassword(BaseConf.RM_password);
-		factory.setHost(BaseConf.RM_host);
+		factory.setUsername(baseConf.getRM_username());
+		factory.setPassword(baseConf.getRM_password());
+		factory.setHost(baseConf.getRM_host());
 		final Connection connection = factory.newConnection();
 		final Channel channel = connection.createChannel();
 

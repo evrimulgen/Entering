@@ -7,8 +7,6 @@ import com.google.gson.annotations.Expose;
 public class ReportContentBack {
 	public static final String TABLE_NAME = "ReportContent";
 	
-	private String Object_id;
-	
 	private String id;
 	
 	private Long patientUID;
@@ -169,23 +167,14 @@ public class ReportContentBack {
 		this.settingResult = settingResult;
 	}
 
-	public String getObject_id() {
-		return Object_id;
-	}
-
-	public void setObject_id(String object_id) {
-		Object_id = object_id;
-	}
-
 	@Override
 	public String toString() {
-		return "ReportContentBack [Object_id=" + Object_id + ", id=" + id + ", patientUID=" + patientUID
-				+ ", studyInstanceUID=" + studyInstanceUID + ", modifiedTime=" + modifiedTime + ", reviewedTime="
-				+ reviewedTime + ", lockedTime=" + lockedTime + ", status=" + status + ", representation="
-				+ representation + ", reviewedResult=" + reviewedResult + ", reportWriter=" + reportWriter
-				+ ", reportWriterUID=" + reportWriterUID + ", hospital=" + hospital + ", reviewer=" + reviewer
-				+ ", examResult=" + examResult + ", partsResult=" + partsResult + ", settingResult=" + settingResult
-				+ "]";
+		return "ReportContentBack [id=" + id + ", patientUID=" + patientUID + ", studyInstanceUID=" + studyInstanceUID
+				+ ", modifiedTime=" + modifiedTime + ", reviewedTime=" + reviewedTime + ", lockedTime=" + lockedTime
+				+ ", status=" + status + ", representation=" + representation + ", reviewedResult=" + reviewedResult
+				+ ", reportWriter=" + reportWriter + ", reportWriterUID=" + reportWriterUID + ", hospital=" + hospital
+				+ ", reviewer=" + reviewer + ", examResult=" + examResult + ", partsResult=" + partsResult
+				+ ", settingResult=" + settingResult + "]";
 	}
-	
+
 }

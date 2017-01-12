@@ -23,7 +23,7 @@ public class UploadDcm implements Runnable {
 	private HttpRequest httpRequest;
 	private String filePath;
 	private Logger LOG = Logger.getLogger(com.mics.upload.UploadDcm.class);
-
+	private BaseConf baseConf = BaseConf.getInstance();
 	public UploadDcm(Attributes attributes, File file) {
 		this.attributes = attributes;
 		this.dcmFile = file;
@@ -86,7 +86,7 @@ public class UploadDcm implements Runnable {
 
 		Map<String, Object> map = httpRequest.creatPatientWithNo(attributes.getString(Tag.PatientName),
 				attributes.getString(Tag.PatientSex, "F").equals("F") ? "0" : "1", patientAge,
-				attributes.getString(Tag.PatientID), BaseConf.hospitalNo + "_" + attributes.getString(Tag.PatientID));
+				attributes.getString(Tag.PatientID), baseConf.getHospitalNo() + "_" + attributes.getString(Tag.PatientID));
 
 		// 将userUID插入study缓存中
 		BaseClass.addStudyCache(attributes.getString(Tag.StudyInstanceUID), map.get("userUID"));
@@ -124,7 +124,7 @@ public class UploadDcm implements Runnable {
 	}
 
 	private void addPatientImage() throws Exception {
-		filePath = BaseConf.Dcm_PreFilePath + BaseClass.getStudyCache().get(attributes.getString(Tag.StudyInstanceUID))
+		filePath = baseConf.getDcm_PreFilePath() + BaseClass.getStudyCache().get(attributes.getString(Tag.StudyInstanceUID))
 				+ "/" + attributes.getString(Tag.StudyInstanceUID) + "/" + attributes.getString(Tag.SeriesInstanceUID)
 				+ "/" + attributes.getString(Tag.SOPInstanceUID);
 
@@ -140,14 +140,14 @@ public class UploadDcm implements Runnable {
 	private void addClinicalRecord() throws Exception {
 		Map<String, Object> map = httpRequest.addClinicalRecord(
 				BaseClass.getStudyCache().get(attributes.getString(Tag.StudyInstanceUID)),
-				attributes.getString(Tag.SeriesNumber), BaseConf.hospitalNo);
+				attributes.getString(Tag.SeriesNumber), baseConf.getHospitalNo());
 		if ((Double) map.get("errorCode") != 0.0) {
 			throw new Exception("addClinicalRecord Error!");
 		}
 	}
 
 	private void createOrderByDoctor() throws Exception {
-		Map<String, Object> map = httpRequest.createOrderByDoctor(BaseConf.hospitalNo,
+		Map<String, Object> map = httpRequest.createOrderByDoctor(baseConf.getHospitalNo(),
 				attributes.getString(Tag.StudyInstanceUID),
 				BaseClass.getStudyCache().get(attributes.getString(Tag.StudyInstanceUID)));
 		if ((Double) map.get("errorCode") != 0.0) {
